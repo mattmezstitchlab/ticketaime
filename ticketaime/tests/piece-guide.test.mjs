@@ -6,11 +6,11 @@ const directory = new URL('../node_modules/.cache/', import.meta.url);
 await mkdir(directory, { recursive: true });
 const output = new URL('piece-guide-test.mjs', directory);
 const result = await build({
-  stdin: { contents: `export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
+  stdin: { contents: `export {default as PieceObject} from './src/components/PieceObject'; export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
   bundle: true, platform: 'node', format: 'esm', packages: 'external', loader: { '.css': 'empty' }, write: false,
 });
 await writeFile(output, result.outputFiles[0].text);
-const { ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
+const { PieceObject, ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
 const { createElement } = await import('react');
 const { renderToStaticMarkup } = await import('react-dom/server');
 test('chaque modèle du catalogue possède une fiche d’usage complète', () => {
@@ -64,5 +64,15 @@ test('le parcours professionnel rend un calendrier daté et annonce ses limites'
   assert.ok(html.includes('Invitation'));
   assert.ok(html.includes('Navette'));
   assert.ok(html.includes('Cartes permanentes'));
+});
+test('objet-pièce : aperçu interchangeable, nom du modèle et action de verso', () => {
+  const html = renderToStaticMarkup(createElement(PieceObject, {model:'opera',title:'Invitation',state:'Exemple',description:'Brouillon',deadline:'2027-05-12'}));
+  assert.ok(html.includes('data-piece-model="opera"'));
+  assert.ok(html.includes('Lire le verso : Invitation'));
+  assert.ok(html.includes('12/05/2027'));
+  assert.ok(html.includes('inert=""'));
+  const artwork = renderToStaticMarkup(createElement(PieceObject, {model:'opera',title:'Invitation',state:'Exemple',description:'Brouillon',artworkUrl:'/images/render.webp'}));
+  assert.ok(artwork.includes('src="/images/render.webp"'));
+  assert.ok(artwork.includes('/?module=opera'));
 });
 await rm(output);

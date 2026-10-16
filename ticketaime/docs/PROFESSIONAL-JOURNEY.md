@@ -22,3 +22,21 @@ modèles. La validation dans un vrai navigateur n'est pas effectuée.
 Prochaine étape métier : identité et événement, stockage privé, rôles contrôlés,
 émission et réception de pièces, puis services d'envoi et paiements. Le prototype
 ne garantit ni authentification des tickets ni droits d'accès réels.
+
+## Objets visuels
+
+Les dates occupées affichent une miniature de la première pièce ; les noms restent
+lisibles et ne reposent pas uniquement sur l'image. Le détail d'une journée utilise
+`PieceObject` : recto avec le rendu existant, verso avec rôle destinataire,
+explication et limites, échéance visible et lien vers le modèle isolé. Le bouton
+« Lire le verso » change le contenu sans animation 3D obligatoire.
+
+Le composant accepte `artworkUrl` pour remplacer ultérieurement le rendu par une
+image d'objet réalisée sur mesure. En cas d'erreur de chargement, il revient au
+composant de catalogue. Aucun rendu externe n'est ajouté par cette modification.
+Changer l'image ne modifie ni l'identifiant fonctionnel du modèle ni ses droits.
+Ces pièces sont toujours des exemples et ne sont pas enregistrées dans un compte.
+
+Recette complémentaire : ouvrir le 12 juin, lire le verso de chaque objet, revenir
+au recto, vérifier l'échéance et ouvrir le modèle. Tester mai et le 13 juin ainsi
+que la mise en page mobile et la réduction des animations.
