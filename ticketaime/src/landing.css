@@ -222,3 +222,16 @@
   .hero-float { transform: rotate(var(--tilt,0deg)); }
   .printed-piece { transform: translateY(2px); }
 }
+/* The postcard is a real video object, directly after the hero. */
+.postcard-scene { padding: 32px 24px 88px; background: #f2efe7; }
+.video-postcard { width: min(920px, 100%); margin: 0 auto; padding: clamp(14px, 3vw, 30px); background: #fffdf5; border: 1px solid #d8d1c2; border-radius: 3px; box-shadow: 0 4px 8px #3c301b0c, 0 24px 55px #3c301b19; transform: rotate(-1deg); }
+.video-postcard-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; color: #797262; font: 10px var(--font-type, monospace); letter-spacing: .12em; }
+.video-postcard-stamp { flex-shrink: 0; border: 2px dashed #998469; padding: 8px; text-align: center; line-height: 1.5; }
+.video-postcard video { display: block; width: 100%; height: auto; max-height: 620px; background: #25251e; }
+.video-postcard figcaption { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; margin-top: 24px; }
+.video-postcard h2 { margin: 10px 0 0; font-size: clamp(24px, 3.8vw, 42px); font-weight: 400; letter-spacing: -.045em; line-height: 1.1; }
+.video-postcard h2 em { color: #937054; }
+.video-postcard-note { margin: 0; padding-left: 24px; border-left: 1px solid #ded7c8; color: #797262; font-family: var(--font-script, cursive); font-size: clamp(18px, 2.7vw, 27px); line-height: 1.4; }
+.video-postcard-note span { display: block; margin-top: 16px; font: 10px var(--font-type, monospace); letter-spacing: .1em; }
+@media (max-width: 600px) { .postcard-scene { padding: 20px 16px 48px; } .video-postcard { transform: none; } .video-postcard figcaption { grid-template-columns: 1fr; gap: 18px; } .video-postcard-note { padding: 14px 0 0; border-left: 0; border-top: 1px solid #ded7c8; } .video-postcard-heading { font-size: 8px; } }
+@media (prefers-reduced-motion: reduce) { .video-postcard { transform: none; } }

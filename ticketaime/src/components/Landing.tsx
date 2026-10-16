@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode, type CSSProperties } from "react";
 import IdeaPrinter, { Arrow } from "./landing/IdeaPrinter";
+import VideoPostcard from "./landing/VideoPostcard";
 import PiecePreview from "./landing/PiecePreview";
 import { composeFromBrief, USAGE_STORIES, type CreationDraft } from "../data/landing";
 import "../landing.css";
@@ -71,6 +72,8 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
           </div>
           <a href="#usages" className="hero-scroll">Et dans la vraie vie ? <svg viewBox="0 0 16 22" width="12" height="18" aria-hidden="true" fill="none" stroke="currentColor"><path d="M8 1v18M2 13l6 6 6-6" /></svg></a>
         </section>
+
+        <VideoPostcard />
 
         <section id="usages" aria-labelledby="usages-title" className="lma-usages">
           <Reveal className="usage-intro lma-container">
