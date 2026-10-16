@@ -1,3 +1,4 @@
+import { ROLES, rolesForCategory } from '../data/pieceRoles';
 import { useState } from 'react';
 import { CATEGORIES, ITEMS } from '../data/catalogue';
 import { FISCAL_NOTICE, PIECE_USES } from '../data/pieceUses';
@@ -20,10 +21,10 @@ export default function PieceGuide() {
       <div className="guide-filters"><label>Rechercher une pièce<input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Invitation, photo, atelier…" /></label><label>Catégorie<select value={category} onChange={(e) => setCategory(e.target.value)}><option value="">Toutes les catégories</option>{CATEGORIES.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label></div>
       <p role="status">{shown.length} / {ITEMS.length} pièces · Usages proposés par famille, champs et actions propres à chaque modèle.</p>
       <div className="guide-mosaic">{shown.map((item) => {
-        const use = PIECE_USES[item.category]; const actions = actionsPourPiece(item.id, item.category);
+        const policy = rolesForCategory(item.category); const use = PIECE_USES[item.category]; const actions = actionsPourPiece(item.id, item.category);
         return <article key={item.id} id={`piece-${item.id}`}>
           <div className="guide-preview" inert><PiecePreview itemId={item.id} decorative /></div>
-          <div className="guide-card-body"><p className="guide-eyebrow">{CATEGORIES.find((c) => c.id === item.category)?.name}</p><h2>{item.name}</h2><p><strong>Utilisation envisagée :</strong> {use.usage}</p><p><strong>Avantage :</strong> {use.advantage}</p><p><strong>À connecter / vérifier :</strong> {use.requires}</p><p className="guide-fiscal"><strong>Reçu fiscal : pas automatique.</strong> Le modèle n’est pas un reçu fiscal. L’éligibilité dépend du versement et de l’organisme, jamais de cette apparence.</p>
+          <div className="guide-card-body"><p className="guide-eyebrow">{CATEGORIES.find((c) => c.id === item.category)?.name}</p><h2>{item.name}</h2><p><strong>Créateurs suggérés :</strong> {policy.creators.map((r) => ROLES[r]).join(', ')}.</p><p><strong>Destinataires possibles :</strong> {policy.recipients.map((r) => ROLES[r]).join(', ')}.</p><p>{policy.note} Rôles indicatifs, pas des autorisations vérifiées.</p><p><strong>Utilisation envisagée :</strong> {use.usage}</p><p><strong>Avantage :</strong> {use.advantage}</p><p><strong>À connecter / vérifier :</strong> {use.requires}</p><p className="guide-fiscal"><strong>Reçu fiscal : pas automatique.</strong> Le modèle n’est pas un reçu fiscal. L’éligibilité dépend du versement et de l’organisme, jamais de cette apparence.</p>
           <details><summary>Personnalisation et actions de ce modèle</summary><p>Champs : {item.editable?.map((f) => f.label).join(', ') || 'aucun champ déclaré'}.</p><p>Actions configurables : {actions.map((a) => a.label).join(', ') || 'aucune action spécifique déclarée'}. Un lien global peut aussi être configuré dans l’atelier. Déclarer une action ne connecte pas son service.</p><code>{item.id}</code></details><a href={`/?module=${encodeURIComponent(item.id)}`} target="_blank" rel="noreferrer">Ouvrir le modèle isolé ↗</a></div>
         </article>;
       })}</div>

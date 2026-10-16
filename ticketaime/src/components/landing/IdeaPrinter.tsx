@@ -1,5 +1,6 @@
+import { ROLES, recommendPieces, type PieceRole, type PieceStep } from '../../data/pieceRoles';
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { composeFromBrief, USAGE_STORIES, type CreationDraft } from "../../data/landing";
+import { USAGE_STORIES, type CreationDraft } from "../../data/landing";
 import PiecePreview from "./PiecePreview";
 import { ITEMS } from "../../data/catalogue";
 
@@ -12,6 +13,9 @@ interface IdeaPrinterProps {
 }
 
 export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
+  const [role, setRole] = useState<PieceRole>('organizer');
+  const [steps, setSteps] = useState<PieceStep[]>([]);
+  const [stepIndex, setStepIndex] = useState(0);
   const [brief, setBrief] = useState("");
   const [draft, setDraft] = useState<CreationDraft | null>(null);
   const [phase, setPhase] = useState<"idle" | "printing" | "ready">("idle");
@@ -33,7 +37,8 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
       return;
     }
     setError("");
-    setDraft(composeFromBrief(brief));
+    const next = recommendPieces(brief, role);
+    setSteps(next); setStepIndex(0); setDraft(next[0].draft);
     setPhase("printing");
     if (timer.current) clearTimeout(timer.current);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -48,6 +53,8 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
 
   return (
     <div className={`idea-printer idea-printer--${phase}`}>
+      <label className="role-picker">Je prépare en tant que <select value={role} disabled={phase === 'printing'} onChange={(e) => { setRole(e.target.value as PieceRole); setDraft(null); setSteps([]); setPhase('idle'); }}>{Object.entries(ROLES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      <p className="role-notice">Rôle déclaré : recommandations de brouillons, pas autorisation vérifiée. Ne saisissez aucune donnée d’invité ni information de santé dans ce champ.</p>
       <form className="idea-form" onSubmit={print} noValidate>
         <label htmlFor="creation-brief" className="sr-only">Décrivez la pièce que vous souhaitez créer</label>
         <input
@@ -109,6 +116,17 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
           </>}
         </div>
       </div>
+      {phase === 'ready' && steps[stepIndex] && <section className="piece-next" aria-label="Parcours de pièces complémentaires">
+        <p>Pièce {stepIndex + 1} / {steps.length} · {steps[stepIndex].title}</p>
+        <p><strong>Pour :</strong> {steps[stepIndex].recipient}</p><p><strong>Pourquoi :</strong> {steps[stepIndex].reason}</p><p>{steps[stepIndex].privacy}</p>
+        <p>Aucun envoi, collecte RSVP, paiement ou accès réel. Personnalisez le brouillon dans le canevas ; le partage sécurisé reste à connecter.</p>
+        {stepIndex + 1 < steps.length && <button type="button" className="printer-open" onClick={() => {
+          const next = stepIndex + 1; setStepIndex(next); setDraft(steps[next].draft); setPhase('printing');
+          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          timer.current = setTimeout(() => { setPhase('ready'); requestAnimationFrame(() => result.current?.focus({ preventScroll: true })); }, reduced ? 100 : 2100);
+        }}>Imprimer le brouillon suivant : {steps[stepIndex + 1].title} <Arrow /></button>}
+        {stepIndex > 0 && <button type="button" className="printer-open" onClick={() => { setStepIndex(stepIndex - 1); setDraft(steps[stepIndex - 1].draft); }}>Revoir la pièce précédente</button>}
+      </section>}
     </div>
   );
 }
