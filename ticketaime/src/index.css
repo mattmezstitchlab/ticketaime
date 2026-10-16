@@ -1,0 +1,337 @@
+@import "tailwindcss";
+@import "./catalogue.css";
+
+@theme {
+  --font-type: "Special Elite", "Courier Prime", "Courier New", monospace;
+  --font-mono-vintage: "Courier Prime", "Courier New", monospace;
+  --font-condensed: "Oswald", "Arial Narrow", sans-serif;
+  --font-heavy: "Anton", "Impact", sans-serif;
+  --font-western: "Rye", "Georgia", serif;
+  --font-bebas: "Bebas Neue", "Oswald", "Arial Narrow", sans-serif;
+  --font-deco: "Limelight", "Playfair Display", serif;
+  --font-display: "Abril Fatface", "Playfair Display", serif;
+  --font-playfair: "Playfair Display", "Georgia", serif;
+  --font-cinzel: "Cinzel", "Playfair Display", serif;
+  --font-script: "Pinyon Script", "Brush Script MT", cursive;
+  --font-stat: "Staatliches", "Oswald", sans-serif;
+
+  --color-wood: #d3c6b0;
+  --color-ink: #2f261b;
+  --color-ink-brown: #4a3a22;
+  --color-ink-navy: #1f3f6b;
+  --color-ink-red: #c0392f;
+  --color-ink-blue: #2b2a6b;
+  --color-ink-rose: #b5405a;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #242427;
+  color: #f4efe2;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+@layer components {
+/* ------------------------------------------------------------------ */
+/*  Ticket shell                                                       */
+/* ------------------------------------------------------------------ */
+
+.ticket {
+  container-type: inline-size;
+  position: relative;
+  isolation: isolate;
+  display: block;
+  --rot: 0deg;
+  --dx: 0px;
+  --dy: 0px;
+  --delay: 0ms;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ticket-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+  transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  filter: drop-shadow(calc(1.5 * var(--u)) calc(3 * var(--u)) calc(5 * var(--u)) rgba(60, 40, 20, 0.28))
+    drop-shadow(0 calc(1 * var(--u)) calc(1 * var(--u)) rgba(60, 40, 20, 0.18));
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 700ms ease;
+  will-change: transform;
+}
+
+/* Reveal on scroll */
+.ticket[data-reveal] .ticket-inner {
+  opacity: 0;
+  transform: translate(var(--dx), calc(var(--dy) + 28px)) rotate(calc(var(--rot) - 3deg)) scale(1.03);
+}
+
+.ticket[data-reveal].is-in .ticket-inner {
+  opacity: 1;
+  transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  transition-delay: var(--delay), var(--delay), var(--delay);
+}
+
+/* Hover & active (pick-up) */
+@media (hover: hover) and (pointer: fine) {
+  .ticket:not(.is-dragging):hover .ticket-inner {
+    transform: translate(var(--dx), calc(var(--dy) - 10px)) rotate(calc(var(--rot) * 0.55)) scale(1.025);
+    filter: drop-shadow(calc(4 * var(--u)) calc(14 * var(--u)) calc(16 * var(--u)) rgba(60, 40, 20, 0.35))
+      drop-shadow(0 calc(1 * var(--u)) calc(1 * var(--u)) rgba(60, 40, 20, 0.15));
+  }
+}
+
+.ticket.is-dragging .ticket-inner {
+  transition:
+    filter 200ms ease,
+    opacity 200ms ease;
+  transform: translate(var(--dx), var(--dy)) rotate(calc(var(--rot) * 0.4)) scale(1.04);
+  filter: drop-shadow(calc(8 * var(--u)) calc(22 * var(--u)) calc(22 * var(--u)) rgba(60, 40, 20, 0.4));
+  cursor: grabbing;
+}
+
+.ticket-face {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Paper stocks                                                       */
+/* ------------------------------------------------------------------ */
+
+.paper {
+  position: relative;
+}
+
+.paper::before,
+.paper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  border-radius: inherit;
+}
+
+/* Fibre grain */
+.paper::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: multiply;
+  opacity: 0.22;
+}
+
+/* Age / foxing around edges */
+.paper::before {
+  background:
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(120, 85, 40, 0.16) 100%),
+    radial-gradient(35% 45% at 0% 0%, rgba(125, 90, 45, 0.18), transparent 70%),
+    radial-gradient(35% 45% at 100% 100%, rgba(125, 90, 45, 0.2), transparent 70%),
+    radial-gradient(25% 30% at 100% 0%, rgba(125, 90, 45, 0.1), transparent 70%),
+    radial-gradient(28% 28% at 15% 95%, rgba(110, 75, 35, 0.12), transparent 70%);
+  mix-blend-mode: multiply;
+}
+
+.paper-heavy-age::before {
+  background:
+    radial-gradient(120% 90% at 50% 50%, transparent 40%, rgba(110, 75, 35, 0.28) 100%),
+    radial-gradient(40% 50% at 0% 0%, rgba(125, 90, 45, 0.32), transparent 70%),
+    radial-gradient(40% 50% at 100% 100%, rgba(125, 90, 45, 0.34), transparent 70%),
+    radial-gradient(30% 35% at 100% 10%, rgba(125, 90, 45, 0.18), transparent 70%),
+    radial-gradient(45% 20% at 50% 100%, rgba(100, 65, 30, 0.22), transparent 70%),
+    radial-gradient(20% 25% at 20% 55%, rgba(140, 100, 55, 0.14), transparent 70%);
+  mix-blend-mode: multiply;
+}
+
+.paper-cream {
+  background-color: #f4eedb;
+  background-image: linear-gradient(160deg, #f8f3e3 0%, #f1e9d3 60%, #e9dfc5 100%);
+}
+
+.paper-ivory {
+  background-color: #f7f2e4;
+  background-image: linear-gradient(160deg, #fbf7ea 0%, #f5efdf 70%, #efe7d2 100%);
+}
+
+.paper-kraft {
+  background-color: #d9c396;
+  background-image: linear-gradient(165deg, #e4d1a8 0%, #d8c293 50%, #cbb07d 100%);
+}
+
+.paper-kraft-dark {
+  background-color: #cfb783;
+  background-image: linear-gradient(170deg, #ddc897 0%, #cdb27a 55%, #bb9d66 100%);
+}
+
+.paper-rose {
+  background-color: #efe5e0;
+  background-image: linear-gradient(160deg, #f3ebe7 0%, #ede2dd 60%, #e4d6cf 100%);
+}
+
+.paper-blush {
+  background-color: #efe3e2;
+  background-image: linear-gradient(160deg, #f4ebea 0%, #ecdedd 60%, #e3d2cf 100%);
+}
+
+.paper-white {
+  background-color: #efeae0;
+  background-image: linear-gradient(160deg, #f5f1e8 0%, #ece6da 60%, #e3dccd 100%);
+}
+
+.paper-grey {
+  background-color: #e8e4dc;
+  background-image: linear-gradient(160deg, #eeeae2 0%, #e4dfd5 60%, #d9d3c6 100%);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Edge treatments                                                    */
+/* ------------------------------------------------------------------ */
+
+/* Perforated postage-stamp edge: --perf is the hole pitch (design px) */
+.edge-perf {
+  --perf: calc(10 * var(--u));
+  --hole: calc(var(--perf) * 0.36);
+  -webkit-mask:
+    linear-gradient(#000 0 0) center / calc(100% - var(--perf)) calc(100% - var(--perf)) no-repeat,
+    radial-gradient(circle, transparent calc(var(--hole) - 0.3px), #000 var(--hole)) calc(var(--perf) / -2)
+      calc(var(--perf) / -2) / var(--perf) var(--perf) repeat;
+  mask:
+    linear-gradient(#000 0 0) center / calc(100% - var(--perf)) calc(100% - var(--perf)) no-repeat,
+    radial-gradient(circle, transparent calc(var(--hole) - 0.3px), #000 var(--hole)) calc(var(--perf) / -2)
+      calc(var(--perf) / -2) / var(--perf) var(--perf) repeat;
+}
+
+/* Notched admission-ticket corners: --notch is the radius (design px) */
+.edge-notch {
+  --notch: calc(14 * var(--u));
+  -webkit-mask:
+    radial-gradient(circle at 0 0, transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 100% 0, transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 0 100%, transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 100% 100%, transparent var(--notch), #000 calc(var(--notch) + 0.5px));
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle at 0 0, transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 100% 0, transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 0 100%, transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 100% 100%, transparent var(--notch), #000 calc(var(--notch) + 0.5px));
+  mask-composite: intersect;
+}
+
+/* Side semicircle notches (cinema ticket) */
+.edge-side-notch {
+  --notch: calc(16 * var(--u));
+  -webkit-mask:
+    radial-gradient(circle at 0 50%, transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 100% 50%, transparent var(--notch), #000 calc(var(--notch) + 0.5px));
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle at 0 50%, transparent var(--notch), #000 calc(var(--notch) + 0.5px)),
+    radial-gradient(circle at 100% 50%, transparent var(--notch), #000 calc(var(--notch) + 0.5px));
+  mask-composite: intersect;
+}
+
+/* Slightly worn, soft corners */
+.edge-soft {
+  border-radius: calc(4 * var(--u));
+}
+
+.edge-round {
+  border-radius: calc(12 * var(--u));
+}
+
+/* ------------------------------------------------------------------ */
+/*  Airmail stripe frame                                               */
+/* ------------------------------------------------------------------ */
+
+.airmail {
+  --stripe: calc(13 * var(--u));
+  --am-red: #c4433a;
+  --am-blue: #2d5192;
+  --am-paper: #f3eee2;
+  background-color: var(--am-paper);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--am-red) 0 var(--stripe),
+    var(--am-paper) var(--stripe) calc(var(--stripe) * 2),
+    var(--am-blue) calc(var(--stripe) * 2) calc(var(--stripe) * 3),
+    var(--am-paper) calc(var(--stripe) * 3) calc(var(--stripe) * 4)
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Print ink helpers                                                  */
+/* ------------------------------------------------------------------ */
+
+.ink-worn {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0.55 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0.55 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-mask-size: 300px 300px;
+  mask-size: 300px 300px;
+}
+
+.vtext {
+  writing-mode: vertical-rl;
+}
+
+.vtext-up {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* Dashed tear line */
+.tear-line {
+  background-image: repeating-linear-gradient(
+    90deg,
+    currentColor 0 calc(4 * var(--u)),
+    transparent calc(4 * var(--u)) calc(8 * var(--u))
+  );
+  height: calc(1.5 * var(--u));
+  opacity: 0.55;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page chrome                                                        */
+/* ------------------------------------------------------------------ */
+
+.caption-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 900ms ease 600ms,
+    transform 900ms ease 600ms;
+}
+
+.caption-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket-inner,
+  .caption-reveal {
+    transition: none !important;
+  }
+  .ticket[data-reveal] .ticket-inner {
+    opacity: 1;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  }
+}
