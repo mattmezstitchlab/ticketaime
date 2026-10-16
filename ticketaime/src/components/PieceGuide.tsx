@@ -5,13 +5,14 @@ import { FISCAL_NOTICE, PIECE_USES } from '../data/pieceUses';
 import { actionsPourPiece } from '../lib/moduleActions';
 import PiecePreview from './landing/PiecePreview';
 import '../piece-guide.css';
+import '../editorial.css';
 export default function PieceGuide() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const shown = ITEMS.filter((item) => (!category || item.category === category) && normalize(`${item.name} ${CATEGORIES.find((c) => c.id === item.category)?.name} ${PIECE_USES[item.category].usage}`).includes(normalize(search)));
   return <div className="piece-guide">
-    <header><a href="/">← Le Monde Aime</a><a href="/?page=guide">Guide des pièces</a><button type="button" onClick={() => window.print()}>Imprimer / enregistrer en PDF</button></header>
+    <header><a href="/">LE MONDE AIME.</a><a href="/?page=guide">Guide des pièces</a><button type="button" onClick={() => window.print()}>Imprimer / enregistrer en PDF</button></header>
     <main>
       <p className="guide-eyebrow">Inventaire d’usages · documentation, pas certification</p>
       <h1>{ITEMS.length} pièces.<br />Des usages à construire, des règles à respecter.</h1>

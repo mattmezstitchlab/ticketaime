@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PiecePreview from './landing/PiecePreview';
 import '../professional.css';
+import '../editorial.css';
 const pieces = [
   { id: 'invitation', model: 'opera', title: 'Invitation', date: '2027-06-12', deadline: '2027-05-12', state: 'À préparer', description: 'Présenter le grand jour et les séquences auxquelles la personne est invitée.' },
   { id: 'reply', model: 'carte-mer', title: 'Réponse RSVP', date: '2027-05-12', deadline: '', state: 'À répondre', description: 'Échéance distincte du mariage. Aucune réponse personnelle n’est collectée dans ce prototype.' },
@@ -14,7 +15,7 @@ export default function ProfessionalJourney() {
   const days = new Date(2027, month, 0).getDate();
   const offset = (new Date(2027, month - 1, 1).getDay() + 6) % 7;
   const dated = pieces.filter((p) => p.date === selected);
-  return <div className="pro-page"><header><a href="/">← Le Monde Aime</a><a href="/?page=guide">Les 168 pièces</a></header><main>
+  return <div className="pro-page"><header><a href="/">LE MONDE AIME.</a><a href="/?page=guide">Les 168 pièces</a></header><main>
     <p className="pro-kicker">Ticketaime · aperçu du concept professionnel</p><h1>Un événement.<br />Des pièces qui vous guident.</h1>
     <p>De l’invitation au souvenir, composez un parcours à votre image. Le portefeuille rassemble les prochaines actions et les moments à conserver.</p>
     <aside><strong>Prototype de démonstration.</strong> Les pièces, dates et états ci-dessous sont fictifs. Aucun compte, droit d’accès, envoi, paiement ou abonnement n’est activé. Le wallet actuel reste local ; ce calendrier n’est pas synchronisé.</aside>
