@@ -6,11 +6,11 @@ const directory = new URL('../node_modules/.cache/', import.meta.url);
 await mkdir(directory, { recursive: true });
 const output = new URL('piece-guide-test.mjs', directory);
 const result = await build({
-  stdin: { contents: `export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
+  stdin: { contents: `export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
   bundle: true, platform: 'node', format: 'esm', packages: 'external', loader: { '.css': 'empty' }, write: false,
 });
 await writeFile(output, result.outputFiles[0].text);
-const { ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
+const { ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
 const { createElement } = await import('react');
 const { renderToStaticMarkup } = await import('react-dom/server');
 test('chaque modèle du catalogue possède une fiche d’usage complète', () => {
@@ -54,5 +54,15 @@ test('tous les rôles ont des parcours de modèles existants et des limites expl
 });
 test('les 168 pièces disposent de rôles créateurs et destinataires documentés', () => {
   for (const item of ITEMS) { const policy = rolesForCategory(item.category); assert.ok(policy.creators.length && policy.recipients.length && policy.note); }
+});
+test('le parcours professionnel rend un calendrier daté et annonce ses limites', () => {
+  const html = renderToStaticMarkup(createElement(ProfessionalJourney));
+  assert.equal((html.match(/class="pro-day"/g) || []).length, 30);
+  assert.ok(html.includes('Prototype de démonstration'));
+  assert.ok(html.includes('Aucun abonnement disponible'));
+  assert.ok(html.includes('12/05/2027'));
+  assert.ok(html.includes('Invitation'));
+  assert.ok(html.includes('Navette'));
+  assert.ok(html.includes('Cartes permanentes'));
 });
 await rm(output);

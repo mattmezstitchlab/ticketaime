@@ -1,3 +1,4 @@
+import ProfessionalJourney from "./components/ProfessionalJourney";
 import { useState } from "react";
 import StudioCanvas from "./components/StudioCanvas";
 import Catalogue from "./components/Catalogue";
@@ -19,6 +20,8 @@ export default function App() {
     setVue("studio");
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   };
+
+  if (new URLSearchParams(window.location.search).get("page") === "professionnels") return <ProfessionalJourney />;
 
   if (new URLSearchParams(window.location.search).get("page") === "guide") return <PieceGuide />;
 

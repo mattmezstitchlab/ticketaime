@@ -37,6 +37,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
       <header className="lma-nav">
         <a className="lma-wordmark" href="#accueil" aria-label="Le Monde Aime, accueil">LE MONDE AIME<span className="wordmark-period">.</span></a>
         <nav aria-label="Navigation principale" className="lma-nav-links">
+          <a href="/?page=professionnels">Prestataires & wallet</a>
           <a href="#experience">L'expérience</a>
           <a href="#usages">Les usages</a>
           <a href="/?page=guide">Les 168 pièces · guide</a>
@@ -132,6 +133,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
       </main>
 
       <footer className="lma-footer">
+        <p className="lma-container"><a href="/?page=professionnels">Découvrir le parcours prestataire et le wallet-calendrier →</a></p>
         <p className="lma-container"><a href="/?page=guide">Explorer les 168 pièces : usages, avantages et limites fiscales →</a></p>
         <div className="lma-container footer-top">
           <a href="#accueil" className="lma-wordmark">LE MONDE AIME.</a>
