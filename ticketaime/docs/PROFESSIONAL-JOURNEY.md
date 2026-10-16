@@ -40,3 +40,12 @@ Ces pièces sont toujours des exemples et ne sont pas enregistrées dans un comp
 Recette complémentaire : ouvrir le 12 juin, lire le verso de chaque objet, revenir
 au recto, vérifier l'échéance et ouvrir le modèle. Tester mai et le 13 juin ainsi
 que la mise en page mobile et la réduction des animations.
+
+### Révision de la présentation calendrier
+
+Le détail d'une journée reprend désormais les pochettes sombres/translucides du
+studio (WalletView) : pièce droite, ouverture de pochette, légende et état courts.
+La page générale conserve le papier clair de la landing. Le recto/verso est retiré :
+les précisions restent disponibles dans « Utilité et précautions » et via un lien
+vers la fiche existante du guide, sans dupliquer une lecture obligatoire.
+Le calendrier, les dates et les limites fonctionnelles ne changent pas.

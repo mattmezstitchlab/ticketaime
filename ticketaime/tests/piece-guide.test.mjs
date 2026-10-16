@@ -65,10 +65,13 @@ test('le parcours professionnel rend un calendrier daté et annonce ses limites'
   assert.ok(html.includes('Navette'));
   assert.ok(html.includes('Cartes permanentes'));
 });
-test('objet-pièce : aperçu interchangeable, nom du modèle et action de verso', () => {
+test('objet-pièce : pochette, aperçu interchangeable et détails facultatifs', () => {
   const html = renderToStaticMarkup(createElement(PieceObject, {model:'opera',title:'Invitation',state:'Exemple',description:'Brouillon',deadline:'2027-05-12'}));
   assert.ok(html.includes('data-piece-model="opera"'));
-  assert.ok(html.includes('Lire le verso : Invitation'));
+  assert.ok(html.includes('piece-pocket-opening'));
+  assert.ok(html.includes('<summary>Utilité et précautions</summary>'));
+  assert.ok(!html.includes('Lire le verso'));
+  assert.ok(html.includes('/?page=guide#piece-opera'));
   assert.ok(html.includes('12/05/2027'));
   assert.ok(html.includes('inert=""'));
   const artwork = renderToStaticMarkup(createElement(PieceObject, {model:'opera',title:'Invitation',state:'Exemple',description:'Brouillon',artworkUrl:'/images/render.webp'}));
