@@ -39,6 +39,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
         <nav aria-label="Navigation principale" className="lma-nav-links">
           <a href="#experience">L'expérience</a>
           <a href="#usages">Les usages</a>
+          <a href="/?page=guide">Les 168 pièces · guide</a>
           {onCatalogue && <button type="button" onClick={onCatalogue}>Le catalogue</button>}
         </nav>
         <button type="button" className="lma-nav-cta" onClick={() => onCommencer()}>Ouvrir l'atelier <Arrow diagonal /></button>
@@ -131,6 +132,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
       </main>
 
       <footer className="lma-footer">
+        <p className="lma-container"><a href="/?page=guide">Explorer les 168 pièces : usages, avantages et limites fiscales →</a></p>
         <div className="lma-container footer-top">
           <a href="#accueil" className="lma-wordmark">LE MONDE AIME.</a>
           <p>Les petits papiers. Les grandes histoires.</p>

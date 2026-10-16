@@ -1,6 +1,7 @@
 import { useState } from "react";
 import StudioCanvas from "./components/StudioCanvas";
 import Catalogue from "./components/Catalogue";
+import PieceGuide from "./components/PieceGuide";
 import Landing from "./components/Landing";
 import ModuleView from "./components/ModuleView";
 import { CATEGORIES, ITEMS } from "./data/catalogue";
@@ -18,6 +19,8 @@ export default function App() {
     setVue("studio");
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   };
+
+  if (new URLSearchParams(window.location.search).get("page") === "guide") return <PieceGuide />;
 
   // ── Vue module isolée pour Atlas : `?module=<id>` ──
   const soloModule = moduleIdFromLocation();
