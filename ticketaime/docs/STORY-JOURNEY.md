@@ -48,3 +48,22 @@ Pour ajouter 2–3 présentations incarnées, fournir les médias autorisés, so
 transcriptions et informations visuelles nécessaires. Recette navigateur : générer,
 constater la disparition des anciens appels, modifier un texte, ouvrir le résumé,
 vérifier le texte actualisé et les liens, fermer puis rouvrir au clavier.
+
+## Reprise locale et capsule
+
+Le dernier scénario et les textes/couleurs de ses sections sont désormais restaurés
+sur le même navigateur. Les données restaurées sont validées, le stockage refusé
+est signalé. Les médias importés ne sont pas sauvegardés : les recharger après
+reprise. Un effacement explicite avec confirmation est disponible dans « À propos
+de ce brouillon ». Un nouveau scénario remplace le scénario actif ; ce n'est pas
+un historique de projets ni une sauvegarde distante. Les modifications locales
+ne sont ni privées par authentification ni partagées entre appareils.
+
+Capsule fixe : parcours, présentation, lien vers le bouton de récapitulatif, haut.
+Le calendrier de démonstration ne contient plus de petits titres : case occupée
+colorée et liens-points avec noms accessibles vers les sections. Il reste distinct
+du scénario actif, sans synchronisation prétendue.
+
+L'objectif complet reste à réaliser : identité et droits serveur, stockage privé,
+partage, réponses, envois, émission sécurisée, paiements, abonnements et exploitation.
+Cette livraison n'est pas une chaîne opérationnelle de bout en bout.

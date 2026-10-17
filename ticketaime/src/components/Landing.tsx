@@ -1,3 +1,4 @@
+import { loadScenario, STORY_KEY } from '../data/storyStorage';
 import StoryJourney from './landing/StoryJourney';
 import type { PieceStep } from '../data/pieceRoles';
 import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
@@ -34,7 +35,12 @@ interface LandingProps {
 }
 
 export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
-  const [scenario, setScenario] = useState<PieceStep[]>([]);
+  const [scenario, setScenario] = useState<PieceStep[]>(loadScenario);
+  const [saveError, setSaveError] = useState('');
+  const saveScenario = (steps: PieceStep[]) => {
+    setScenario(steps);
+    try { localStorage.setItem(STORY_KEY, JSON.stringify(steps)); setSaveError(''); } catch { setSaveError('Parcours non sauvegardé : stockage local indisponible.'); }
+  };
   return (
     <div className="lma-page">
       <header className="lma-nav">
@@ -73,13 +79,14 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
             <h1 id="hero-brand">LE MONDE AIME<span>.</span></h1>
             <h2>Donnez une forme<br />à vos belles idées.</h2>
             <p className="hero-description">Un billet, une invitation, un souvenir.<br className="mobile-break" /> Tout commence par quelques mots.</p>
-            <IdeaPrinter onOpen={onCommencer} onScenario={setScenario} />
+            <IdeaPrinter onOpen={onCommencer} onScenario={saveScenario} />
           </div>
           <a href="#usages" className="hero-scroll">Et dans la vraie vie ? <svg viewBox="0 0 16 22" width="12" height="18" aria-hidden="true" fill="none" stroke="currentColor"><path d="M8 1v18M2 13l6 6 6-6" /></svg></a>
         </section>
 
+        {saveError && <p role="alert" className="lma-container">{saveError}</p>}
         <VideoPostcard />
-        {scenario.length > 0 && <StoryJourney key={scenario[0].draft.id} steps={scenario} onOpen={onCommencer} />}
+        {scenario.length > 0 && <StoryJourney key={scenario[0].draft.id} steps={scenario} onClear={() => saveScenario([])} onOpen={onCommencer} />}
 
 
         {scenario.length === 0 && <section id="usages" aria-labelledby="usages-title" className="lma-usages">

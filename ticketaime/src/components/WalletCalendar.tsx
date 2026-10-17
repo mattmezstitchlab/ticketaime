@@ -18,8 +18,8 @@ export default function WalletCalendar({ month, year, pieces }: { month: number;
   </div>;
 }
 export function WalletDay({ date, label, pieces }: { date: string; label: string; pieces: CalendarPiece[] }) {
-  return <div className="calendar-nav-day" data-calendar-date={date} aria-label={label}>
+  return <div className={`calendar-nav-day ${pieces.length ? 'calendar-nav-day--occupied' : ''}`} data-calendar-date={date} aria-label={label}>
     <span className="calendar-nav-number">{Number(date.slice(-2))}</span>
-    {pieces.map(piece => <a key={piece.id} href={`#event-section-${piece.id}`} aria-label={`${piece.title}, ${label}, rejoindre la section`}>{piece.title}</a>)}
+    {pieces.map(piece => <a key={piece.id} href={`#event-section-${piece.id}`} aria-label={`${piece.title}, ${label}, rejoindre la section`} title={piece.title}><span aria-hidden="true">●</span><span className="sr-only">{piece.title}</span></a>)}
   </div>;
 }

@@ -1,18 +1,20 @@
+import { loadSection, sectionKey } from '../../data/storyStorage';
 import { useEffect, useRef, useState } from 'react';
 import type { PieceStep } from '../../data/pieceRoles';
 import type { CreationDraft } from '../../data/landing';
 import { USAGE_STORIES } from '../../data/landing';
 import PiecePreview from './PiecePreview';
 import '../../story-journey.css';
-export default function StoryJourney({ steps }: { steps: PieceStep[]; onOpen: (draft: CreationDraft) => void }) {
+export default function StoryJourney({ steps, onClear }: { steps: PieceStep[]; onClear?: () => void; onOpen: (draft: CreationDraft) => void }) {
   const [recap, setRecap] = useState<{ title: string; text: string; id: string }[] | null>(null);
   const recapHeading = useRef<HTMLHeadingElement>(null);
   return <section id="usages" className="story-journey" aria-labelledby="story-title">
-    <div className="lma-container story-heading"><p className="lma-eyebrow">Votre fil d’histoire · brouillon local</p><h2 id="story-title">Un moment après l’autre.<br /><em>Votre parcours prend forme.</em></h2><p>Les scènes illustrent une intention, pas vos participants réels. Personnalisez votre parcours au fil des sections. Aucun site public ni droit partagé n’est créé.</p><details><summary>À propos de ce brouillon</summary><p role="note">Ne saisissez pas de données d’invités, de devis confidentiels ou d’allergies ici. Modifications et médias temporaires : ils ne sont pas conservés après rechargement. Ouvrir le canevas quitte cette page et réinitialise ce parcours.</p></details><nav aria-label="Étapes du scénario">{steps.map((step, index) => <a key={step.id} href={`#story-${step.id}`}>{String(index+1).padStart(2,'0')} · {step.title}</a>)}</nav></div>
+    <div className="lma-container story-heading"><p className="lma-eyebrow">Votre fil d’histoire · brouillon local</p><h2 id="story-title">Un moment après l’autre.<br /><em>Votre parcours prend forme.</em></h2><p>Les scènes illustrent une intention, pas vos participants réels. Personnalisez votre parcours au fil des sections. Aucun site public ni droit partagé n’est créé.</p><details><summary>À propos de ce brouillon</summary><p role="note">Ne saisissez pas de données d’invités, de devis confidentiels ou d’allergies ici. Parcours, textes et couleurs enregistrés uniquement dans ce navigateur, sans synchronisation. Les médias importés restent temporaires et doivent être sélectionnés à nouveau après rechargement. Ne considérez pas ce stockage comme un espace privé sécurisé.</p><button type="button" onClick={() => { if (!window.confirm('Effacer ce parcours et ses textes/couleurs de ce navigateur ?')) return; try { steps.forEach(step => localStorage.removeItem(sectionKey(step.draft.id))); onClear?.(); } catch { window.alert('Impossible d’effacer le stockage local. Utilisez les réglages de votre navigateur.'); } }}>Effacer ce brouillon local</button></details><nav aria-label="Étapes du scénario">{steps.map((step, index) => <a key={step.id} href={`#story-${step.id}`}>{String(index+1).padStart(2,'0')} · {step.title}</a>)}</nav></div>
     {steps.map((step, index) => <StorySection key={step.draft.id} step={step} index={index} />)}
+    <nav className="story-dock" aria-label="Commandes du parcours"><a href="#usages">Mon parcours</a><a href="#video-postcard">Présentation</a><a href="#story-recap-control">Raconter</a><a href="#accueil">↑ Haut</a></nav>
     <div className="lma-container story-ending">
       <p className="lma-eyebrow">Le fil de votre histoire</p>
-      <button type="button" className="lma-nav-cta" aria-expanded={recap !== null} aria-controls="story-recap" onClick={() => {
+      <button type="button" id="story-recap-control" className="lma-nav-cta" aria-expanded={recap !== null} aria-controls="story-recap" onClick={() => {
         if (recap) { setRecap(null); return; }
         setRecap(steps.map(step => ({ id: step.id, title: document.getElementById(`story-title-${step.id}`)?.textContent || step.title, text: document.getElementById(`story-text-${step.id}`)?.textContent || step.reason })));
         requestAnimationFrame(() => recapHeading.current?.focus());
@@ -23,9 +25,15 @@ export default function StoryJourney({ steps }: { steps: PieceStep[]; onOpen: (d
   </section>;
 }
 function StorySection({ step, index }: { step: PieceStep; index: number }) {
-  const [title, setTitle] = useState(step.title);
-  const [text, setText] = useState(step.reason);
-  const [background, setBackground] = useState('#f5f3ee');
+  const [initial] = useState(() => loadSection(step.draft.id, { title: step.title, text: step.reason, background: '#f5f3ee' }));
+  const [title, setTitle] = useState(initial.title);
+  const [text, setText] = useState(initial.text);
+  const [background, setBackground] = useState(initial.background);
+  const [saveError, setSaveError] = useState('');
+  useEffect(() => {
+    try { localStorage.setItem(sectionKey(step.draft.id), JSON.stringify({ title, text, background })); setSaveError(''); }
+    catch { setSaveError('Modifications non sauvegardées : stockage local indisponible.'); }
+  }, [title, text, background, step.draft.id]);
   const [media, setMedia] = useState<{url: string; type: 'image' | 'video'} | null>(null);
   const [error, setError] = useState('');
   const objectUrl = useRef<string | null>(null);
@@ -44,6 +52,7 @@ function StorySection({ step, index }: { step: PieceStep; index: number }) {
       if (!['image/jpeg','image/png','image/webp','video/mp4','video/webm'].includes(file.type) || file.size > 30*1024*1024) { setError('Choisissez un JPG, PNG, WebP, MP4 ou WebM de 30 Mo maximum.'); return; }
       if (objectUrl.current) URL.revokeObjectURL(objectUrl.current); const url = URL.createObjectURL(file); objectUrl.current = url; setMedia({url, type:file.type.startsWith('video/')?'video':'image'}); setError('');
     }} /></label><p>Utilisez des médias dont vous possédez les droits et l’accord des personnes représentées. Aucun fichier n’est envoyé à un serveur. Ajoutez dans le texte les informations nécessaires pour comprendre une vidéo sans le son.</p><button type="button" onClick={resetMedia}>Revenir au visuel initial</button></div></details>
+    {saveError && <p className="lma-container story-error" role="alert">{saveError}</p>}
     {error && <p className="lma-container story-error" role="alert">{error}</p>}
   </section>;
 }

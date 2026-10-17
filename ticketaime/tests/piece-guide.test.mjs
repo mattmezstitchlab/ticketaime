@@ -6,11 +6,11 @@ const directory = new URL('../node_modules/.cache/', import.meta.url);
 await mkdir(directory, { recursive: true });
 const output = new URL('piece-guide-test.mjs', directory);
 const result = await build({
-  stdin: { contents: `export {default as StoryJourney} from './src/components/landing/StoryJourney'; export {default as PieceObject} from './src/components/PieceObject'; export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
+  stdin: { contents: `export {parseScenario,loadSection,sectionKey} from './src/data/storyStorage'; export {default as StoryJourney} from './src/components/landing/StoryJourney'; export {default as PieceObject} from './src/components/PieceObject'; export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
   bundle: true, platform: 'node', format: 'esm', packages: 'external', loader: { '.css': 'empty' }, write: false,
 });
 await writeFile(output, result.outputFiles[0].text);
-const { StoryJourney, PieceObject, ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
+const { parseScenario, loadSection, sectionKey, StoryJourney, PieceObject, ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
 const { createElement } = await import('react');
 const { renderToStaticMarkup } = await import('react-dom/server');
 test('chaque modèle du catalogue possède une fiche d’usage complète', () => {
@@ -89,11 +89,28 @@ test('le scénario déploie une section personnalisable par pièce sans collecte
   assert.equal((html.match(/type="file"/g) || []).length, steps.length);
   assert.equal((html.match(/type="color"/g) || []).length, steps.length);
   assert.ok(html.includes('réponses et actions serveur non connectées'));
-  assert.ok(html.includes('ne sont pas conservés après rechargement'));
+  assert.ok(html.includes('sans synchronisation'));
   assert.ok(!html.includes('<form'));
   assert.ok(html.includes('Raconter l’histoire'));
   assert.ok(html.includes('aria-controls="story-recap"'));
   assert.ok(html.includes('id="story-recap" hidden=""'));
   assert.ok(html.includes('sans lecture audio automatique'));
+});
+test('sauvegarde : validation du scénario et restauration des textes/couleurs', () => {
+  const steps = recommendPieces('mariage', 'organizer');
+  assert.equal(parseScenario(JSON.parse(JSON.stringify(steps))).length, steps.length);
+  assert.deepEqual(parseScenario([{id:'fake'}]), []);
+  assert.deepEqual(parseScenario([...steps, steps[0]]), []);
+  const original = globalThis.localStorage;
+  const data = new Map();
+  globalThis.localStorage = { getItem: key => data.get(key) ?? null };
+  const fallback = {title:'Invitation',text:'Texte',background:'#f5f3ee'};
+  assert.deepEqual(loadSection('test', fallback), fallback);
+  const edited = {title:'Notre mariage',text:'Bienvenue',background:'#aabbcc'};
+  data.set(sectionKey('test'), JSON.stringify(edited));
+  assert.deepEqual(loadSection('test', fallback), edited);
+  data.set(sectionKey('test'), '{broken');
+  assert.deepEqual(loadSection('test', fallback), fallback);
+  if (original === undefined) delete globalThis.localStorage; else globalThis.localStorage = original;
 });
 await rm(output);
