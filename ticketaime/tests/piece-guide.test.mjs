@@ -57,12 +57,14 @@ test('les 168 pièces disposent de rôles créateurs et destinataires documenté
 });
 test('le parcours professionnel rend un calendrier daté et annonce ses limites', () => {
   const html = renderToStaticMarkup(createElement(ProfessionalJourney));
-  assert.equal((html.match(/class="pro-day"/g) || []).length, 30);
+  assert.equal((html.match(/data-calendar-date=/g) || []).length, 30);
   assert.ok(html.includes('Prototype de démonstration'));
   assert.ok(html.includes('Aucun abonnement disponible'));
   assert.ok(html.includes('12/05/2027'));
+  assert.ok(html.includes('Retour à la date'));
+  assert.ok(html.includes('Pièce suivante'));
   assert.ok(html.includes('Invitation'));
-  assert.ok(html.includes('Navette'));
+  assert.ok(html.includes('12 juin 2027, 2 pièce(s), ouvrir'));
   assert.ok(html.includes('Cartes permanentes'));
 });
 test('objet-pièce : pochette, aperçu interchangeable et détails facultatifs', () => {

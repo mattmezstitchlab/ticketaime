@@ -49,3 +49,20 @@ La page générale conserve le papier clair de la landing. Le recto/verso est re
 les précisions restent disponibles dans « Utilité et précautions » et via un lien
 vers la fiche existante du guide, sans dupliquer une lecture obligatoire.
 Le calendrier, les dates et les limites fonctionnelles ne changent pas.
+
+### Cases réversibles Wallet
+
+Le calendrier utilise désormais WalletCalendar : les cases restent carrées et
+régulières. Un clic révèle la carte Wallet dans la même case, sans liste de
+pochettes séparée. Flèches, touches gauche/droite et balayage tactile permettent
+le défilement cyclique des pièces du jour. Le compteur reste visible. Retour à
+la date par ↶ ou Échap, avec restitution du focus. Les faces masquées sont inertes.
+Les jours vides expliquent qu'aucune pièce n'est disponible. Le changement de mois
+réinitialise les cases ouvertes. Les animations sont désactivées avec
+prefers-reduced-motion. Sur mobile, défilement horizontal du calendrier pour
+conserver la taille des cartes au lieu de rendre sept cartes illisibles.
+
+Ces cartes réutilisent l'esprit du pass Wallet, sans QR prétendant certifier
+l'authenticité. Les modèles et les dates restent fictifs. Aucun graphe de causalité,
+compte ou stockage synchronisé ajouté. Le composant PieceObject reste disponible
+mais n'est plus utilisé dans le calendrier.
