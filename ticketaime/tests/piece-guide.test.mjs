@@ -6,11 +6,11 @@ const directory = new URL('../node_modules/.cache/', import.meta.url);
 await mkdir(directory, { recursive: true });
 const output = new URL('piece-guide-test.mjs', directory);
 const result = await build({
-  stdin: { contents: `export {parseScenario,loadSection,sectionKey} from './src/data/storyStorage'; export {default as StoryJourney} from './src/components/landing/StoryJourney'; export {default as PieceObject} from './src/components/PieceObject'; export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
+  stdin: { contents: `export {default as WalletView} from './src/components/WalletView'; export {parseScenario,loadSection,sectionKey} from './src/data/storyStorage'; export {default as StoryJourney} from './src/components/landing/StoryJourney'; export {default as PieceObject} from './src/components/PieceObject'; export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
   bundle: true, platform: 'node', format: 'esm', packages: 'external', loader: { '.css': 'empty' }, write: false,
 });
 await writeFile(output, result.outputFiles[0].text);
-const { parseScenario, loadSection, sectionKey, StoryJourney, PieceObject, ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
+const { WalletView, parseScenario, loadSection, sectionKey, StoryJourney, PieceObject, ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
 const { createElement } = await import('react');
 const { renderToStaticMarkup } = await import('react-dom/server');
 test('chaque modèle du catalogue possède une fiche d’usage complète', () => {
@@ -112,5 +112,13 @@ test('sauvegarde : validation du scénario et restauration des textes/couleurs',
   data.set(sectionKey('test'), '{broken');
   assert.deepEqual(loadSection('test', fallback), fallback);
   if (original === undefined) delete globalThis.localStorage; else globalThis.localStorage = original;
+});
+test('les pochettes filtrent la même collection avec une recherche partagée', () => {
+  const html = renderToStaticMarkup(createElement(WalletView, {selectedCategory:'voyage',searchQuery:'introuvable-unique-xyz',onSelectItem:()=>{},onSearchQuery:()=>{}}));
+  assert.ok(html.includes('Rechercher dans les pochettes'));
+  assert.ok(html.includes('Aucune pièce dans cette catégorie'));
+  assert.ok(!html.includes('group/slot'));
+  const match = renderToStaticMarkup(createElement(WalletView, {selectedCategory:'voyage',searchQuery:'Explorer',onSelectItem:()=>{},onSearchQuery:()=>{}}));
+  assert.ok(match.includes('group/slot'));
 });
 await rm(output);

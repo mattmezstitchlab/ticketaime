@@ -32,3 +32,22 @@ Ce document ne corrige pas ces mécanismes et ne prétend pas le faire.
 Cette livraison déplace seulement la carte postale dans le hero. Aucune vue de
 l'atelier n'est supprimée ni refondue sans une recette dédiée : ajout, sélection,
 personnalisation, mise en page, impression, mobile et retour à la bibliothèque.
+
+## Première simplification implémentée
+
+- « Composer » identifie la table ; « Les pièces · liste » ouvre la bibliothèque
+  compacte ; « Les pièces · pochettes » ouvre l'exploration visuelle.
+- La liste n'est plus affichée en parallèle des pochettes. Son bouton ramène à
+  la table et à la liste, sans supprimer les objets de la composition.
+- Recherche commune aux deux présentations ; champ explicite dans les pochettes,
+  avec résultat vide expliqué. La recherche des pochettes porte sur leur catégorie
+  active ; la liste conserve son filtre existant.
+- Barre atelier et bibliothèque harmonisées au papier clair et accent olive de
+  la landing ; table/pochettes sombres et dessins des objets conservés.
+- Ajout, sélection, mise en page, inspecteur et impression conservés. Catalogue
+  public et guide restent disponibles : ils ne sont pas supprimés par ce changement.
+
+Contrôles : TypeScript, build, test de recherche des pochettes et suite existante.
+Recette visuelle et interactive à effectuer : passer de liste à pochettes, chercher
+un modèle, ajouter à la table, sélectionner et personnaliser, puis imprimer.
+Ce changement ne corrige ni la sécurité ni les fonctions serveur absentes.

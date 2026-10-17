@@ -3,6 +3,8 @@ import Ticket from "./Ticket";
 import { CATEGORIES, ITEMS, ITEM_INDEX, type CategoryId, type Item } from "../data/catalogue";
 
 interface WalletViewProps {
+  searchQuery?: string;
+  onSearchQuery?: (query: string) => void;
   selectedCategory?: CategoryId | "tout";
   onSelectCategory?: (cat: CategoryId | "tout") => void;
   selectedItemId?: string | null;
@@ -11,6 +13,8 @@ interface WalletViewProps {
 }
 
 export default function WalletView({
+  searchQuery = "",
+  onSearchQuery,
   selectedCategory = "tout",
   onSelectCategory,
   selectedItemId,
@@ -22,7 +26,8 @@ export default function WalletView({
   );
 
   const currentCat = CATEGORIES.find((c) => c.id === activeCat) ?? CATEGORIES[0];
-  const catItems = ITEMS.filter((it) => it.category === activeCat);
+  const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const catItems = ITEMS.filter((it) => it.category === activeCat && normalize(it.name).includes(normalize(searchQuery.trim())));
 
   const handleTabChange = (catId: CategoryId) => {
     setActiveCat(catId);
@@ -31,6 +36,9 @@ export default function WalletView({
 
   return (
     <div className="w-full max-w-[1400px] mx-auto select-none my-6">
+      <label className="workshop-pocket-search">Rechercher dans les pochettes
+        <input type="search" value={searchQuery} onChange={event => onSearchQuery?.(event.target.value)} placeholder="Nom d’une pièce…" />
+      </label>
       {/* ---------------- Category Binder Tabs ---------------- */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] px-4">
         {CATEGORIES.map((c) => {
@@ -93,6 +101,7 @@ export default function WalletView({
           <div className="absolute right-1 top-0 bottom-0 w-px bg-white/20" />
         </div>
 
+        {catItems.length === 0 && <p className="text-white/70 pl-12 text-sm" role="status">Aucune pièce dans cette catégorie pour cette recherche.</p>}
         {/* Plastic Gloss & Diagonal Highlight Sheen (Reflet de film plastique transparent) */}
         <div
           className="absolute inset-0 pointer-events-none z-10 opacity-30"

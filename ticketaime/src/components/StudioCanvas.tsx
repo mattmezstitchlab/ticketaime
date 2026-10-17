@@ -1,3 +1,4 @@
+import "../workshop.css";
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import Ticket from "./Ticket";
 import Inspector, { type PieceCustomization } from "./Inspector";
@@ -277,20 +278,21 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-100 text-neutral-900">
+    <div className="workshop-shell flex flex-col min-h-screen bg-neutral-100 text-neutral-900">
       {/* ── Barre d'atelier condensée ── */}
       <header className="sticky top-0 z-50 border-b border-black/10 bg-white/85 backdrop-blur-xl">
         <div className="mx-auto max-w-[1700px] flex flex-wrap items-center gap-2 px-3 py-2 min-h-12">
           <button
             type="button"
-            onClick={() => setIsLibraryOpen(!isLibraryOpen)}
+            onClick={() => { if (viewMode === "wallet") { setViewMode("canvas"); setIsLibraryOpen(true); } else setIsLibraryOpen(!isLibraryOpen); }}
             className={`h-8 px-2.5 rounded-lg text-[12px] font-medium transition-all flex items-center gap-1.5 ${
-              isLibraryOpen ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+              isLibraryOpen && viewMode === "canvas" ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
             }`}
-            title="Bibliothèque"
+            title="Afficher la liste des pièces"
+            aria-pressed={viewMode === "canvas" && isLibraryOpen}
           >
             <span>☰</span>
-            <span className="hidden sm:inline">Bibliothèque</span>
+            <span className="hidden sm:inline">Les pièces · liste</span>
             <span className="font-mono text-[10px] opacity-60">{ITEMS.length}</span>
           </button>
 
@@ -325,21 +327,23 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
             <button
               type="button"
               onClick={() => setViewMode("canvas")}
+              aria-pressed={viewMode === "canvas"}
               className={`flex items-center gap-1.5 px-3 h-7 rounded-[8px] text-[12px] font-medium transition-all ${
                 viewMode === "canvas" ? "bg-white shadow-sm text-neutral-900" : "text-neutral-500 hover:text-neutral-800"
               }`}
             >
-              Table libre
+              Composer
               <span className="font-mono text-[10px] px-1 rounded bg-neutral-900/10">{canvasItems.length}</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode("wallet")}
+              aria-pressed={viewMode === "wallet"}
               className={`flex items-center gap-1.5 px-3 h-7 rounded-[8px] text-[12px] font-medium transition-all ${
                 viewMode === "wallet" ? "bg-white shadow-sm text-neutral-900" : "text-neutral-500 hover:text-neutral-800"
               }`}
             >
-              Pochettes
+              Les pièces · pochettes
               <span className="font-mono text-[10px] px-1 rounded bg-neutral-900/10">{CATEGORIES.length}</span>
             </button>
           </div>
@@ -410,7 +414,7 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
       {/* ── Corps 3 colonnes ── */}
       <div className="flex-1 flex min-w-0 overflow-hidden relative">
         {/* 1. Bibliothèque */}
-        {isLibraryOpen && (
+        {isLibraryOpen && viewMode === "canvas" && (
           <aside
             className="w-[280px] flex-none hidden md:flex flex-col bg-white border-r border-black/10 z-20 h-[calc(100vh-48px)] overflow-hidden"
             aria-label="Bibliothèque de pièces"
@@ -418,7 +422,7 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
             <div className="p-3 border-b border-black/10 space-y-2.5 bg-neutral-50/80">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-neutral-500">
-                  Bibliothèque
+                  Les pièces
                 </span>
                 <span className="text-[10px] font-mono text-neutral-400">
                   {filteredLibraryItems.length}/{ITEMS.length}
@@ -597,6 +601,8 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
           ) : (
             <div className="w-full">
               <WalletView
+                searchQuery={searchQuery}
+                onSearchQuery={setSearchQuery}
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
                 selectedItemId={selectedCatalogueItem?.id}
