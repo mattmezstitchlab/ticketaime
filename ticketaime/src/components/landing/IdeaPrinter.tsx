@@ -10,9 +10,10 @@ export function Arrow({ diagonal = false }: { diagonal?: boolean }) {
 
 interface IdeaPrinterProps {
   onOpen: (draft: CreationDraft) => void;
+  onScenario?: (steps: PieceStep[]) => void;
 }
 
-export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
+export default function IdeaPrinter({ onOpen, onScenario }: IdeaPrinterProps) {
   const [role, setRole] = useState<PieceRole>('organizer');
   const [steps, setSteps] = useState<PieceStep[]>([]);
   const [stepIndex, setStepIndex] = useState(0);
@@ -44,6 +45,7 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     timer.current = setTimeout(() => {
       setPhase("ready");
+      onScenario?.(next);
       requestAnimationFrame(() => result.current?.focus({ preventScroll: true }));
     }, reduced ? 100 : 2100);
   };
@@ -53,7 +55,7 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
 
   return (
     <div className={`idea-printer idea-printer--${phase}`}>
-      <label className="role-picker">Je prépare en tant que <select value={role} disabled={phase === 'printing'} onChange={(e) => { setRole(e.target.value as PieceRole); setDraft(null); setSteps([]); setPhase('idle'); }}>{Object.entries(ROLES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      <label className="role-picker">Je prépare en tant que <select value={role} disabled={phase === 'printing'} onChange={(e) => { setRole(e.target.value as PieceRole); onScenario?.([]); setDraft(null); setSteps([]); setPhase('idle'); }}>{Object.entries(ROLES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
       <p className="role-notice">Rôle déclaré : recommandations de brouillons, pas autorisation vérifiée. Ne saisissez aucune donnée d’invité ni information de santé dans ce champ.</p>
       <form className="idea-form" onSubmit={print} noValidate>
         <label htmlFor="creation-brief" className="sr-only">Décrivez la pièce que vous souhaitez créer</label>

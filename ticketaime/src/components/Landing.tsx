@@ -1,4 +1,6 @@
-import { useEffect, useRef, type ReactNode, type CSSProperties } from "react";
+import StoryJourney from './landing/StoryJourney';
+import type { PieceStep } from '../data/pieceRoles';
+import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
 import IdeaPrinter, { Arrow } from "./landing/IdeaPrinter";
 import VideoPostcard from "./landing/VideoPostcard";
 import PiecePreview from "./landing/PiecePreview";
@@ -32,6 +34,7 @@ interface LandingProps {
 }
 
 export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
+  const [scenario, setScenario] = useState<PieceStep[]>([]);
   return (
     <div className="lma-page">
       <header className="lma-nav">
@@ -70,14 +73,15 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
             <h1 id="hero-brand">LE MONDE AIME<span>.</span></h1>
             <h2>Donnez une forme<br />à vos belles idées.</h2>
             <p className="hero-description">Un billet, une invitation, un souvenir.<br className="mobile-break" /> Tout commence par quelques mots.</p>
-            <IdeaPrinter onOpen={onCommencer} />
+            <IdeaPrinter onOpen={onCommencer} onScenario={setScenario} />
           </div>
           <a href="#usages" className="hero-scroll">Et dans la vraie vie ? <svg viewBox="0 0 16 22" width="12" height="18" aria-hidden="true" fill="none" stroke="currentColor"><path d="M8 1v18M2 13l6 6 6-6" /></svg></a>
         </section>
 
+        {scenario.length > 0 && <StoryJourney key={scenario[0].draft.id} steps={scenario} onOpen={onCommencer} />}
         <VideoPostcard />
 
-        <section id="usages" aria-labelledby="usages-title" className="lma-usages">
+        {scenario.length === 0 && <section id="usages" aria-labelledby="usages-title" className="lma-usages">
           <Reveal className="usage-intro lma-container">
             <div><p className="lma-eyebrow">Pensé pour vos moments</p><h2 id="usages-title">Des pièces à créer.<br /><span>Des histoires à vivre.</span></h2></div>
             <p>Du premier « oui » au dernier rappel.<br />Des petits objets qui vous accompagnent<br className="desktop-break" /> dans les grands moments.</p>
@@ -109,6 +113,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
           ))}
         </section>
 
+        }
         <section id="experience" className="lma-experience" aria-labelledby="experience-title">
           <Reveal className="lma-container experience-heading">
             <p className="lma-eyebrow">Simple comme une belle idée</p>
