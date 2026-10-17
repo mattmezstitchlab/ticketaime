@@ -61,10 +61,12 @@ test('le parcours professionnel rend un calendrier daté et annonce ses limites'
   assert.ok(html.includes('Prototype de démonstration'));
   assert.ok(html.includes('Aucun abonnement disponible'));
   assert.ok(html.includes('12/05/2027'));
-  assert.ok(html.includes('Retour à la date'));
-  assert.ok(html.includes('Pièce suivante'));
+  assert.ok(html.includes('href="#event-section-invitation"'));
+  assert.ok(html.includes('id="event-section-invitation"'));
+  assert.ok(!html.includes('wallet-day-back'));
+  assert.ok(!html.includes('wallet-card-art'));
   assert.ok(html.includes('Invitation'));
-  assert.ok(html.includes('12 juin 2027, 2 pièce(s), ouvrir'));
+  assert.ok(html.includes('Navette, 12 juin 2027, rejoindre la section'));
   assert.ok(html.includes('Cartes permanentes'));
 });
 test('objet-pièce : pochette, aperçu interchangeable et détails facultatifs', () => {

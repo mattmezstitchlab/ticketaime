@@ -66,3 +66,6 @@ Ces cartes réutilisent l'esprit du pass Wallet, sans QR prétendant certifier
 l'authenticité. Les modèles et les dates restent fictifs. Aucun graphe de causalité,
 compte ou stockage synchronisé ajouté. Le composant PieceObject reste disponible
 mais n'est plus utilisé dans le calendrier.
+
+### Calendrier simplifié
+La présentation réversible et les miniatures sont retirées. Chaque journée contient seulement la date et les liens des pièces, vers les sections de démonstration en dessous. Les visuels restent grands dans cette verticalité. Aucun lien vers un parcours personnel sauvegardé : les données restent fictives.
