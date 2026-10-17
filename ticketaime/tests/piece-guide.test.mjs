@@ -115,8 +115,8 @@ test('sauvegarde : validation du scénario et restauration des textes/couleurs',
 });
 test('les pochettes filtrent la même collection avec une recherche partagée', () => {
   const html = renderToStaticMarkup(createElement(WalletView, {selectedCategory:'voyage',searchQuery:'introuvable-unique-xyz',onSelectItem:()=>{},onSearchQuery:()=>{}}));
-  assert.ok(html.includes('Rechercher dans les pochettes'));
-  assert.ok(html.includes('Aucune pièce dans cette catégorie'));
+  assert.ok(html.includes('Rechercher un ticket'));
+  assert.ok(html.includes('Aucun ticket dans cette catégorie'));
   assert.ok(!html.includes('group/slot'));
   const match = renderToStaticMarkup(createElement(WalletView, {selectedCategory:'voyage',searchQuery:'Explorer',onSelectItem:()=>{},onSearchQuery:()=>{}}));
   assert.ok(match.includes('group/slot'));

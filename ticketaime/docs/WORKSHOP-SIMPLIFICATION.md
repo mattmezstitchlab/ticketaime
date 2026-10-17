@@ -51,3 +51,6 @@ Contrôles : TypeScript, build, test de recherche des pochettes et suite existan
 Recette visuelle et interactive à effectuer : passer de liste à pochettes, chercher
 un modèle, ajouter à la table, sélectionner et personnaliser, puis imprimer.
 Ce changement ne corrige ni la sécurité ni les fonctions serveur absentes.
+
+## Sélecteur unique
+À la demande utilisateur, la colonne latérale et son bouton sont supprimés. La vue Les tickets (pochettes avec recherche) devient le seul sélecteur dans l’atelier. Composer conserve la table et l’inspecteur. Ajout et sélection depuis les pochettes sont conservés. Les tests de recherche utilisent désormais le vocabulaire ticket.

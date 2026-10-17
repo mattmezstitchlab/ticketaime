@@ -36,8 +36,8 @@ export default function WalletView({
 
   return (
     <div className="w-full max-w-[1400px] mx-auto select-none my-6">
-      <label className="workshop-pocket-search">Rechercher dans les pochettes
-        <input type="search" value={searchQuery} onChange={event => onSearchQuery?.(event.target.value)} placeholder="Nom d’une pièce…" />
+      <label className="workshop-pocket-search">Rechercher un ticket
+        <input type="search" value={searchQuery} onChange={event => onSearchQuery?.(event.target.value)} placeholder="Nom d’un ticket…" />
       </label>
       {/* ---------------- Category Binder Tabs ---------------- */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] px-4">
@@ -101,7 +101,7 @@ export default function WalletView({
           <div className="absolute right-1 top-0 bottom-0 w-px bg-white/20" />
         </div>
 
-        {catItems.length === 0 && <p className="text-white/70 pl-12 text-sm" role="status">Aucune pièce dans cette catégorie pour cette recherche.</p>}
+        {catItems.length === 0 && <p className="text-white/70 pl-12 text-sm" role="status">Aucun ticket dans cette catégorie pour cette recherche.</p>}
         {/* Plastic Gloss & Diagonal Highlight Sheen (Reflet de film plastique transparent) */}
         <div
           className="absolute inset-0 pointer-events-none z-10 opacity-30"
