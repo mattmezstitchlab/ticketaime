@@ -67,3 +67,23 @@ La recette Chromium a été tentée mais reste bloquée par les bibliothèques
 système absentes et l’accès aux dépôts Ubuntu indisponible dans ce sandbox.
 Le rendu visuel, la géométrie responsive et les interactions natives clavier /
 glisser-déposer restent à valider dans un vrai navigateur sur la preview.
+
+## Correction — conserver le design d’origine
+
+Le hero alternatif de la première version est retiré : l’accueil monte de nouveau
+le composant Landing existant et sa feuille de styles non modifiée. Carte postale
+vidéo, papiers flottants, photographies, collages, navigation et capsule sont
+conservés. Seul le contrôle de saisie/impression est injecté pour brancher les
+intentions, codes et liens au wallet de fonctions. Les scènes d’usage ouvrent
+maintenant un ticket individuel, en conservant leur modèle lorsque compatible.
+
+Les règles générales du wallet ne s’appliquent pas à la landing, pour éviter une
+nouvelle substitution des typographies, boutons ou espacements. Le wallet et
+l’atelier reprennent le wordmark, la navigation, le papier et la typographie sans
+serif du design existant. Les pièces dessinées restent leurs composants d’origine,
+sans nouvelle carte extérieure ; le canevas n’est pas réintroduit.
+
+Tests de non-régression : éléments du design d’origine réellement montés, vidéo,
+fente et scènes présents, absence du hero alternatif, et ouverture d’un ticket
+Opéra depuis sa scène vers l’atelier individuel. Recette visuelle en navigateur
+réel toujours à effectuer ; les contrôles DOM ne valident pas les pixels.

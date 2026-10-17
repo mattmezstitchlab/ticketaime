@@ -118,6 +118,33 @@ test("accueil rendu avec les deux entrées, wallet et fente, sans canevas", () =
   assert.ok(html.includes("Une envie ou une question"));
   assert.ok(html.includes("J’ai reçu un code / lien"));
   assert.ok(html.includes("Mon wallet"));
-  assert.ok(html.includes("fw-slot"));
+  assert.ok(html.includes("printer-slot"));
   assert.ok(!html.includes("canvas-dots"));
+});
+
+test("l’accueil conserve les éléments réels du design original, sans le chrome alternatif du wallet", () => {
+  globalThis.window = { location: { href: "https://example.com/" } };
+  const html = renderToStaticMarkup(createElement(FunctionWallet));
+  for (const landmark of [
+    'class="lma-nav"',
+    'class="lma-hero"',
+    "hero-ephemera",
+    "hero-float--mail",
+    "hero-float--admit",
+    "hero-float--photo",
+    "hero-float--stamp",
+    "postcard-scene--hero",
+    "/videos/le-monde-aime-postcard.mp4",
+    "printer-case",
+    "printer-led",
+    "printer-window",
+    "usage-photo",
+    "usage-ticket-package",
+    "story-dock",
+  ])
+    assert.ok(html.includes(landmark), landmark);
+  assert.ok(html.includes("Quel projet aimeriez-vous"));
+  assert.ok(!html.includes("fw-hero"));
+  assert.ok(!html.includes("fw-nav"));
+  assert.ok(!html.includes('class="fw-app'));
 });

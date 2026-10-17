@@ -14,6 +14,12 @@ globalThis.IntersectionObserver = class {
   disconnect() {}
 };
 window.scrollTo = () => {};
+window.matchMedia = () => ({
+  matches: true,
+  addEventListener() {},
+  removeEventListener() {},
+});
+window.HTMLMediaElement.prototype.pause = () => {};
 const directory = new URL("../node_modules/.cache/", import.meta.url);
 await mkdir(directory, { recursive: true });
 const output = new URL("function-wallet-ui.mjs", directory);
@@ -45,7 +51,9 @@ const click = async (element) => {
 };
 const button = (text) =>
   [...document.querySelectorAll("button")].find((b) =>
-    b.textContent.includes(text),
+    b.textContent
+      .toLocaleLowerCase("fr")
+      .includes(text.toLocaleLowerCase("fr")),
   );
 const field = (label) =>
   [...document.querySelectorAll("label")]
@@ -145,7 +153,7 @@ test("carte postale : timbre, modèle, message, collage, reprise et filtres du w
     "Comment envoyer une carte postale ?",
   );
   await submit();
-  assert.ok(document.querySelector(".fw-hero-stamp"));
+  assert.ok(document.querySelector(".printed-piece .lma-piece-preview"));
   await click(document.querySelector(".fw-printed"));
   await fill(field("Choisir une carte postale"), "carte-tour-eiffel");
   await fill(field("Votre mot"), "Bonjour Élodie !");
@@ -206,5 +214,20 @@ test("collage au dépôt et stockage plein : pas de faux succès", async () => {
   );
   assert.equal(saved().length, 0);
   window.Storage.prototype.setItem = setItem;
+  await act(async () => root.unmount());
+});
+
+test("les scènes photographiques d’origine ouvrent le nouvel atelier, pas le canevas", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  await mount();
+  assert.ok(document.querySelector(".hero-float--mail"));
+  assert.ok(document.querySelector("#video-postcard video"));
+  assert.ok(document.querySelectorAll(".usage-photo").length > 0);
+  await click(document.querySelector("#usage-spectacle .scene-cta"));
+  assert.ok(document.querySelector(".fw-editor"));
+  assert.equal(field("Choisir un modèle").value, "opera");
+  assert.equal(document.querySelector("canvas"), null);
+  assert.equal(document.querySelector(".fw-nav"), null);
   await act(async () => root.unmount());
 });

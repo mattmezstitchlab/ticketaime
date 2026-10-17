@@ -11,6 +11,8 @@ import {
   ticketFromLink,
   type WalletTicket,
 } from "../data/functionWallet";
+import Landing from "./Landing";
+import { Arrow } from "./landing/IdeaPrinter";
 import PiecePreview from "./landing/PiecePreview";
 import "../function-wallet.css";
 
@@ -251,6 +253,13 @@ export default function FunctionWallet() {
     next.details.title = query.trim().slice(0, 360);
     setPrinted(next);
   };
+  const printedItem = ITEMS.find(
+    (i) =>
+      i.id ===
+      (printed?.toolId === "postcard"
+        ? printed.details.stampModel || "blue-stamp"
+        : printed?.itemId),
+  );
   const shownTools = TOOLS.filter(
     (t) =>
       (category === "all" ||
@@ -260,131 +269,172 @@ export default function FunctionWallet() {
         .includes(search.toLocaleLowerCase("fr")),
   );
   return (
-    <div className="fw-app">
-      <header className="fw-nav">
-        <button className="fw-brand" onClick={() => go("home")}>
-          Le Monde Aime<span>Des tickets pour faire des choses.</span>
-        </button>
-        <button onClick={() => go("wallet")}>
-          Mon wallet <span>{wallet.length}</span>
-        </button>
-      </header>
+    <div className={view === "home" ? "lma-page" : "fw-app lma-page"}>
+      {view !== "home" && (
+        <header className="lma-nav">
+          <button className="lma-wordmark fw-brand" onClick={() => go("home")}>
+            LE MONDE AIME<span className="wordmark-period">.</span>
+          </button>
+          <nav className="lma-nav-links">
+            <button onClick={() => go("home")}>L’expérience</button>
+          </nav>
+          <button className="lma-nav-cta" onClick={() => go("wallet")}>
+            Mon wallet <span>{wallet.length}</span>
+            <Arrow diagonal />
+          </button>
+        </header>
+      )}
       {view === "home" && (
-        <main>
-          <section className="fw-hero">
-            <p className="fw-eyebrow">UN WALLET PLEIN DE POSSIBILITÉS</p>
-            <h1 ref={title} tabIndex={-1}>
-              Une envie.
-              <br />
-              Le bon ticket.
-            </h1>
-            <p>
-              Poser une question, réserver, écrire, inviter…
-              <br />
-              Chaque ticket est un petit outil. Que voulez-vous faire ?
-            </p>
-            <div className="fw-mode" aria-label="Mode de saisie">
-              <button
-                aria-pressed={mode === "idea"}
-                onClick={() => {
-                  setMode("idea");
-                  setQuery("");
-                  setStatus("");
-                  setPrinted(null);
-                }}
-              >
-                Une envie ou une question
-              </button>
-              <button
-                aria-pressed={mode === "code"}
-                onClick={() => {
-                  setMode("code");
-                  setQuery("");
-                  setStatus("");
-                  setPrinted(null);
-                }}
-              >
-                J’ai reçu un code / lien
-              </button>
-            </div>
-            <form className="fw-prompt" onSubmit={submit}>
-              <label className="sr-only" htmlFor="fw-query">
-                {mode === "idea"
-                  ? "Votre envie ou votre question"
-                  : "Code local ou lien reçu"}
-              </label>
-              <input
-                id="fw-query"
-                required
-                maxLength={40000}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={
-                  mode === "idea"
-                    ? "Je voudrais réserver pour un mariage…"
-                    : "LMA-… ou collez le lien complet reçu"
-                }
-              />
-              <button type="submit">Sortir mon ticket ↓</button>
-            </form>
-            <p className="fw-note">
-              {mode === "idea"
-                ? "Suggestions par mots-clés, pas une conversation IA. Vous pouvez aussi choisir directement un outil."
-                : "Code court : sur ce navigateur seulement. Lien complet : ouvre aussi le ticket sur un autre appareil."}
-            </p>
-            <div className="fw-printer">
-              <div className="fw-slot" />
-              <div className="fw-output">
-                {printed ? (
-                  <button
-                    ref={printedButton}
-                    key={printed.id}
-                    className="fw-printed"
-                    onClick={() => open(printed, mode === "code")}
-                    aria-label="Ouvrir ce ticket dans l’atelier"
-                  >
-                    <TicketFace ticket={printed} small />
-                    <span>Ouvrir mon ticket →</span>
-                  </button>
-                ) : (
-                  <span className="fw-empty-slot">
-                    Votre prochain petit outil sortira d’ici.
-                  </span>
-                )}
-              </div>
-            </div>
-            {status && (
-              <p role="status" className="fw-status">
-                {status}
-              </p>
-            )}
-            <button className="fw-primary" onClick={() => go("wallet")}>
-              Explorer tous les outils du wallet →
-            </button>
-          </section>
-          <section className="fw-discover">
-            <p className="fw-eyebrow">
-              CHOISIR · PERSONNALISER · GARDER · PARTAGER
-            </p>
-            <h2>
-              Pas une table de dessin.
-              <br />
-              Une collection de choses à faire.
-            </h2>
-            <div className="fw-tool-grid">
-              {TOOLS.slice(0, 3).map((t) => (
+        <Landing
+          onCatalogue={() => go("wallet")}
+          onCommencer={(draft) => {
+            if (!draft) {
+              go("wallet");
+              return;
+            }
+            const usageTools: Record<string, string> = {
+              mariage: "reservation",
+              postale: "postcard",
+              voyage: "journey",
+              spectacle: "invitation",
+              cinema: "invitation",
+              administratif: "invoice",
+              bar: "gift",
+              loisirs: "invitation",
+            };
+            const id =
+              usageTools[draft.usageId] ??
+              suggestTool(draft.brief) ??
+              "invitation";
+            const next = createTicket(TOOLS.find((t) => t.id === id)!);
+            next.details.title = draft.brief.slice(0, 360);
+            if (
+              templatesFor(TOOLS.find((t) => t.id === id)!).some(
+                (i) => i.id === draft.itemId,
+              ) &&
+              !["reservation", "invoice", "quote"].includes(id)
+            ) {
+              next.itemId = draft.itemId;
+              next.fields = draft.fields;
+            }
+            open(next);
+          }}
+          printer={
+            <div className="idea-printer idea-printer--ready">
+              <div className="fw-mode" aria-label="Mode de saisie">
                 <button
-                  key={t.id}
-                  className="fw-tool"
-                  onClick={() => open(createTicket(t))}
+                  aria-pressed={mode === "idea"}
+                  onClick={() => {
+                    setMode("idea");
+                    setQuery("");
+                    setStatus("");
+                    setPrinted(null);
+                  }}
                 >
-                  <span>{t.name} ↗</span>
-                  <p>{t.description}</p>
+                  Une envie ou une question
                 </button>
-              ))}
+                <button
+                  aria-pressed={mode === "code"}
+                  onClick={() => {
+                    setMode("code");
+                    setQuery("");
+                    setStatus("");
+                    setPrinted(null);
+                  }}
+                >
+                  J’ai reçu un code / lien
+                </button>
+              </div>
+              <form className="idea-form" onSubmit={submit}>
+                <label className="sr-only" htmlFor="fw-query">
+                  {mode === "idea"
+                    ? "Votre envie ou votre question"
+                    : "Code local ou lien reçu"}
+                </label>
+                <input
+                  id="fw-query"
+                  required
+                  maxLength={40000}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={
+                    mode === "idea"
+                      ? "Je voudrais réserver pour un mariage…"
+                      : "LMA-… ou collez le lien complet reçu"
+                  }
+                />
+                <button className="idea-submit" type="submit">
+                  Sortir mon ticket <Arrow />
+                </button>
+              </form>
+              <p className="fw-note">
+                {mode === "idea"
+                  ? "Suggestions par mots-clés, pas une conversation IA. Vous pouvez aussi choisir directement un outil."
+                  : "Code court : sur ce navigateur seulement. Lien complet : ouvre aussi le ticket sur un autre appareil."}
+              </p>
+              <div className="printer">
+                <div className="printer-case" aria-hidden="true">
+                  <span className="printer-brand">
+                    LMA <span>ATELIER INSTANTANÉ</span>
+                  </span>
+                  <span className="printer-led" />
+                </div>
+                <div className="printer-slot" />
+                <div className="printer-window">
+                  {printed ? (
+                    <button
+                      ref={printedButton}
+                      key={printed.id}
+                      className="fw-printed printed-piece"
+                      style={
+                        printedItem
+                          ? {
+                              width: Math.min(
+                                340,
+                                (158 * printedItem.w) / printedItem.h,
+                              ),
+                              maxWidth: "100%",
+                              marginInline: "auto",
+                            }
+                          : undefined
+                      }
+                      onClick={() => open(printed, mode === "code")}
+                      aria-label="Ouvrir ce ticket dans l’atelier"
+                    >
+                      {printed.toolId === "postcard" ? (
+                        <PiecePreview
+                          itemId={printed.details.stampModel || "blue-stamp"}
+                          decorative
+                        />
+                      ) : (
+                        <PiecePreview
+                          itemId={printed.itemId}
+                          fields={printed.fields}
+                          decorative
+                        />
+                      )}
+                      <span>Ouvrir mon ticket →</span>
+                    </button>
+                  ) : (
+                    <div className="printer-idle-paper" aria-hidden="true">
+                      <span>LES BELLES IDÉES COMMENCENT ICI.</span>
+                      <i />
+                      <i />
+                    </div>
+                  )}
+                </div>
+              </div>
+              {status && (
+                <p role="status" className="fw-status">
+                  {status}
+                </p>
+              )}
+              <button className="fw-primary" onClick={() => go("wallet")}>
+                Explorer tous les outils du wallet →
+              </button>
             </div>
-          </section>
-        </main>
+          }
+        />
       )}
       {view === "wallet" && (
         <main className="fw-wallet">
@@ -801,12 +851,14 @@ export default function FunctionWallet() {
           </div>
         </main>
       )}
-      <footer className="fw-footer">
-        Le Monde Aime · Wallet d’outils et créations personnelles.
-        <br />
-        Pas de réservation confirmée, paiement, envoi postal, signature ou
-        contrôle d’accès automatique.
-      </footer>
+      {view !== "home" && (
+        <footer className="fw-footer">
+          Le Monde Aime · Wallet d’outils et créations personnelles.
+          <br />
+          Pas de réservation confirmée, paiement, envoi postal, signature ou
+          contrôle d’accès automatique.
+        </footer>
+      )}
     </div>
   );
 }

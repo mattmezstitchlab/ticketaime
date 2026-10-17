@@ -609,3 +609,223 @@
 .fw-stamp .lma-piece-preview {
   width: 95px;
 }
+/* Keep the existing editorial identity; the wallet changes the journey, not the brand. */
+.fw-app.lma-page {
+  background: var(--lma-paper);
+  color: var(--lma-ink);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif;
+}
+.fw-app.lma-page h1 {
+  font-family: inherit;
+  font-weight: 450;
+  letter-spacing: -0.055em;
+}
+.fw-app.lma-page .lma-wordmark {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.fw-app.lma-page .lma-wordmark span {
+  display: inline;
+  font: inherit;
+  margin: 0;
+  letter-spacing: inherit;
+}
+.fw-app.lma-page .lma-nav-cta {
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 11px 17px;
+  background: transparent;
+  color: var(--lma-ink);
+}
+.fw-app.lma-page .fw-primary {
+  background: #2d3329;
+  border-color: #2d3329;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.fw-app.lma-page .fw-tool {
+  background: #fbfaf6;
+  border-color: #26272320;
+  border-radius: 5px;
+}
+.fw-app.lma-page .fw-tool > span {
+  font:
+    500 22px/1.2 -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    "Segoe UI",
+    sans-serif;
+  letter-spacing: -0.035em;
+}
+.fw-app.lma-page .fw-wallet h1,
+.fw-app.lma-page .fw-editor-heading h1 {
+  font-weight: 450;
+  letter-spacing: -0.055em;
+}
+.fw-app.lma-page .fw-mode {
+  margin: 0 0 14px;
+  gap: 16px;
+}
+.fw-app.lma-page .fw-mode button {
+  font-size: 11px;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #747a6b;
+}
+.fw-app.lma-page .fw-mode button[aria-pressed="true"] {
+  color: #283621;
+  border-bottom-color: #283621;
+}
+.fw-app.lma-page .fw-wallet > .fw-mode {
+  margin-top: 28px;
+}
+.fw-app.lma-page .idea-submit {
+  border: 0;
+  background: #2d3329;
+  color: #f8f6ef;
+  border-radius: 7px;
+  padding: 14px 18px;
+  font-size: 12px;
+}
+.fw-app.lma-page .printed-piece {
+  padding: 0;
+  border: 0;
+  background: none;
+  max-width: 300px;
+  margin: auto;
+  border-radius: 0;
+  animation: print-feed 2s both;
+}
+.fw-app.lma-page .printed-piece > span {
+  display: none;
+}
+.fw-app.lma-page .printer-window .lma-piece-preview {
+  width: 100%;
+}
+.fw-app.lma-page .fw-ticket {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+.fw-app.lma-page .fw-ticket-head {
+  font-size: 9px;
+  color: #73776b;
+  border: 0;
+  padding-bottom: 8px;
+}
+.fw-app.lma-page .fw-ticket .fw-art {
+  max-width: 100%;
+  margin: 0 auto 28px;
+  filter: drop-shadow(0 12px 15px #30291618);
+}
+.fw-app.lma-page .fw-business {
+  background: #fffdf5;
+  padding: 30px;
+  border-bottom: 1px dashed #dad6c8;
+  box-shadow: 0 10px 24px #30291610;
+}
+.fw-app.lma-page .fw-business h2 {
+  font-family: var(--font-mono-vintage);
+  font-size: 28px;
+}
+.fw-app.lma-page .fw-models h2 {
+  font-family: inherit;
+  font-weight: 450;
+  letter-spacing: -0.04em;
+}
+.fw-app.lma-page .fw-model,
+.fw-app.lma-page .fw-saved {
+  background: #eeede7;
+  border-radius: 5px;
+}
+.fw-app.lma-page .fw-model-art {
+  height: 200px;
+}
+.fw-app.lma-page .fw-wallet,
+.fw-app.lma-page .fw-editor {
+  padding-top: 60px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fw-app.lma-page .printed-piece {
+    animation: none;
+  }
+}
+/* The home mounts the original Landing without the wallet's generic button/type rules. */
+.idea-printer .fw-mode {
+  margin: 0 0 14px;
+  gap: 16px;
+}
+.idea-printer .fw-mode button {
+  font: inherit;
+  font-size: 11px;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #747a6b;
+}
+.idea-printer .fw-mode button[aria-pressed="true"] {
+  color: #283621;
+  border-bottom-color: #283621;
+}
+.idea-printer .fw-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  margin: 10px auto 0;
+  border: 1px solid #26272337;
+  border-radius: 5px;
+  padding: 11px 17px;
+  background: transparent;
+  color: #262723;
+  font: inherit;
+  font-size: 12px;
+}
+.idea-printer .fw-primary:hover {
+  background: #e9e6df;
+}
+.idea-printer .fw-note {
+  margin: 12px 0 0 !important;
+  font-size: 10px !important;
+  text-align: left;
+  line-height: 1.5;
+  color: #73776b;
+}
+.idea-printer .printed-piece {
+  max-width: 300px;
+  margin: auto;
+}
+.idea-printer .printed-piece > span {
+  display: none;
+}
+.idea-printer .fw-status {
+  margin: 10px 0;
+  font-size: 11px;
+  text-align: left;
+}
+@media (max-width: 600px) {
+  .idea-printer .fw-mode {
+    gap: 12px;
+  }
+  .idea-printer .fw-mode button {
+    font-size: 10px;
+  }
+}
+@media print {
+  .fw-app .lma-nav {
+    display: none !important;
+  }
+}

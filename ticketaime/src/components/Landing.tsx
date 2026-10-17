@@ -34,10 +34,11 @@ function Reveal({ children, className = "" }: { children: ReactNode; className?:
 interface LandingProps {
   onCommencer: (creation?: CreationDraft) => void;
   onCatalogue?: () => void;
+  printer?: ReactNode;
 }
 
-export default function Landing({ onCommencer }: LandingProps) {
-  const [scenario, setScenario] = useState<PieceStep[]>(loadScenario);
+export default function Landing({ onCommencer, onCatalogue, printer }: LandingProps) {
+  const [scenario, setScenario] = useState<PieceStep[]>(() => printer ? [] : loadScenario());
   const [saveError, setSaveError] = useState('');
   const saveScenario = (steps: PieceStep[]) => {
     setScenario(steps);
@@ -52,7 +53,7 @@ export default function Landing({ onCommencer }: LandingProps) {
           <a href={scenario.length ? "#story-title" : "#experience"}>L'expérience</a>
           <a href="#usages">Les usages</a>
         </nav>
-        <button type="button" className="lma-nav-cta" onClick={() => onCommencer()}>Ouvrir l'atelier <Arrow diagonal /></button>
+        <button type="button" className="lma-nav-cta" onClick={() => onCatalogue ? onCatalogue() : onCommencer()}>{printer ? "Mon wallet" : "Ouvrir l’atelier"} <Arrow diagonal /></button>
       </header>
 
       <main>
@@ -80,7 +81,7 @@ export default function Landing({ onCommencer }: LandingProps) {
             <VideoPostcard hero />
             <h2>Quel projet aimeriez-vous<br />faire vivre ?</h2>
             <p className="hero-description">Un projet, des tickets, une histoire à construire.<br className="mobile-break" /> Tout commence par quelques mots.</p>
-            <IdeaPrinter onOpen={onCommencer} onScenario={saveScenario} />
+            {printer ?? <IdeaPrinter onOpen={onCommencer} onScenario={saveScenario} />}
           </div>
           <a href="#usages" className="hero-scroll">Et dans la vraie vie ? <svg viewBox="0 0 16 22" width="12" height="18" aria-hidden="true" fill="none" stroke="currentColor"><path d="M8 1v18M2 13l6 6 6-6" /></svg></a>
         </section>
@@ -113,7 +114,7 @@ export default function Landing({ onCommencer }: LandingProps) {
                   <p className="scene-category">{usage.title}</p>
                   <h3 id={`title-${usage.id}`}>{usage.headline.split("\n").map((line, i) => <span key={line}>{i > 0 && <br />}{line}</span>)}</h3>
                   <p className="scene-description">{usage.description}</p>
-                  <button type="button" className="scene-cta" onClick={() => onCommencer(packageFromBrief(usage.sample, usage.id))}>Ouvrir ce pack dans l’atelier <Arrow diagonal /></button>
+                  <button type="button" className="scene-cta" onClick={() => onCommencer(packageFromBrief(usage.sample, usage.id))}>{printer ? "Choisir mon ticket" : "Ouvrir ce pack dans l’atelier"} <Arrow diagonal /></button>
                 </Reveal>
                 <div className="usage-ticket-package" aria-label={`Pack de tickets : ${usage.title}`}>
                   {(LANDING_COLLAGES[usage.id] ?? [usage.itemId]).map((itemId, i) => <div key={itemId} className="usage-package-ticket" style={{ '--ticket-index': i } as CSSProperties} inert><PiecePreview itemId={itemId} fields={itemId === usage.itemId ? usage.fields : undefined} decorative /></div>)}
@@ -135,8 +136,8 @@ export default function Landing({ onCommencer }: LandingProps) {
           <div className="lma-container experience-steps">
             {[
               ["01", "Racontez.", "Un moment, une personne, une occasion. Décrivez ce que vous voulez créer."],
-              ["02", "Attrapez.", "Un modèle adapté sort de la fente. Cliquez sur votre pièce pour découvrir la carte postale et le parcours."],
-              ["03", "Faites-en la vôtre.", "Personnalisez les textes, les images et les couleurs au fil des sections."],
+              ["02", "Attrapez.", "Un modèle adapté sort de la fente. Cliquez sur votre pièce pour la personnaliser dans l’atelier."],
+              ["03", "Faites-en la vôtre.", "Personnalisez votre ticket, gardez-le dans votre wallet et partagez son lien."],
             ].map(([number, title, text]) => <Reveal key={number} className="experience-step"><span>{number}</span><h3>{title}</h3><p>{text}</p></Reveal>)}
           </div>
         </section>
@@ -145,7 +146,7 @@ export default function Landing({ onCommencer }: LandingProps) {
           <Reveal>
             <p className="lma-eyebrow">Il ne manque que votre idée</p>
             <h2 id="last-word-title">À vous de laisser<br /><em>une belle trace.</em></h2>
-            <a className="lma-dark-button" href="#creation-brief">Créer ma première pièce <Arrow /></a>
+            <a className="lma-dark-button" href={printer ? "#fw-query" : "#creation-brief"}>Créer ma première pièce <Arrow /></a>
           </Reveal>
         </section>
         </>}
@@ -155,7 +156,7 @@ export default function Landing({ onCommencer }: LandingProps) {
         <div className="lma-container footer-top">
           <a href="#accueil" className="lma-wordmark">LE MONDE AIME.</a>
           <p>Les petits papiers. Les grandes histoires.</p>
-          <button type="button" onClick={() => onCommencer()}>Entrer dans l'atelier <Arrow diagonal /></button>
+          <button type="button" onClick={() => onCatalogue ? onCatalogue() : onCommencer()}>Entrer dans l'atelier <Arrow diagonal /></button>
         </div>
         <div className="lma-container footer-bottom">
           <span>Un atelier pour vos idées, fait avec attention.</span>
@@ -164,7 +165,7 @@ export default function Landing({ onCommencer }: LandingProps) {
       </footer>
     </div>
     <nav className="story-dock" aria-label="Commandes du parcours">
-      <a href={scenario.length ? '#usages' : '#creation-brief'}>{scenario.length ? 'Mon parcours' : 'Créer'}</a>
+      <a href={scenario.length ? '#usages' : (printer ? '#fw-query' : '#creation-brief')}>{scenario.length ? 'Mon parcours' : 'Créer'}</a>
       <a href="#video-postcard">Présentation</a>
       {scenario.length > 0 && <a href="#story-recap-control">Raconter</a>}
       <a href="#accueil">↑ Haut</a>
