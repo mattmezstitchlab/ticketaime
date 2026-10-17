@@ -41,7 +41,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
         <a className="lma-wordmark" href="#accueil" aria-label="Le Monde Aime, accueil">LE MONDE AIME<span className="wordmark-period">.</span></a>
         <nav aria-label="Navigation principale" className="lma-nav-links">
           <a href="/?page=professionnels">Prestataires & wallet</a>
-          <a href="#experience">L'expérience</a>
+          <a href={scenario.length ? "#story-title" : "#experience"}>L'expérience</a>
           <a href="#usages">Les usages</a>
           <a href="/?page=guide">Les 168 pièces · guide</a>
           {onCatalogue && <button type="button" onClick={onCatalogue}>Le catalogue</button>}
@@ -115,6 +115,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
         </section>
 
         }
+        {scenario.length === 0 && <>
         <section id="experience" className="lma-experience" aria-labelledby="experience-title">
           <Reveal className="lma-container experience-heading">
             <p className="lma-eyebrow">Simple comme une belle idée</p>
@@ -123,8 +124,8 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
           <div className="lma-container experience-steps">
             {[
               ["01", "Racontez.", "Un moment, une personne, une occasion. Décrivez ce que vous voulez créer."],
-              ["02", "Attrapez.", "Un modèle adapté sort de la fente. Cliquez sur votre pièce pour l'ouvrir dans le canevas."],
-              ["03", "Faites-en la vôtre.", "Affinez les textes, les liens et les détails dans l'inspecteur. Votre idée reste à vos côtés."],
+              ["02", "Attrapez.", "Un modèle adapté sort de la fente. Cliquez sur votre pièce pour découvrir la carte postale et le parcours."],
+              ["03", "Faites-en la vôtre.", "Personnalisez les textes, les images et les couleurs au fil des sections."],
             ].map(([number, title, text]) => <Reveal key={number} className="experience-step"><span>{number}</span><h3>{title}</h3><p>{text}</p></Reveal>)}
           </div>
         </section>
@@ -136,6 +137,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
             <a className="lma-dark-button" href="#creation-brief">Créer ma première pièce <Arrow /></a>
           </Reveal>
         </section>
+        </>}
       </main>
 
       <footer className="lma-footer">

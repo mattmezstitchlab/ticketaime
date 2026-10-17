@@ -89,5 +89,9 @@ test('le scénario déploie une section personnalisable par pièce sans collecte
   assert.ok(html.includes('réponses et actions serveur non connectées'));
   assert.ok(html.includes('ne sont pas conservés après rechargement'));
   assert.ok(!html.includes('<form'));
+  assert.ok(html.includes('Raconter l’histoire'));
+  assert.ok(html.includes('aria-controls="story-recap"'));
+  assert.ok(html.includes('id="story-recap" hidden=""'));
+  assert.ok(html.includes('sans lecture audio automatique'));
 });
 await rm(output);

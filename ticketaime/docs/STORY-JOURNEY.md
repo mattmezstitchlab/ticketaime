@@ -33,3 +33,18 @@ vidéo. Les contrôles automatisés ne remplacent pas cette validation visuelle.
 
 ## Parcours simplifié
 La pièce imprimée mène maintenant à la carte postale vidéo, placée avant les sections. Le bloc explicatif sous la fente et les boutons canevas des sections sont retirés. Les précautions restent dans des détails dépliables. La vidéo ne parle pas automatiquement, ne suit pas le scroll et aucun assistant vocal, traduction ou personnage alternatif n’est connecté.
+
+## Conclusion du parcours
+
+Après génération, les sections pédagogiques « Racontez / Attrapez / Faites-en
+la vôtre » et « Créer ma première pièce » ne sont plus affichées. Avant génération,
+elles restent disponibles et leur texte correspond au parcours actuel.
+Le bouton final « Raconter l'histoire » déplie un récapitulatif textuel avec les
+titres/textes actuellement édités et des liens vers chaque étape. État ouvert
+annoncé, panneau associé et focus sur le titre à l'ouverture. Ce n'est pas une
+narration vocale, une audiodescription des médias ou une déclaration de conformité.
+La vidéo existante est conservée ; aucun nouveau film de présentation inventé.
+Pour ajouter 2–3 présentations incarnées, fournir les médias autorisés, sous-titres,
+transcriptions et informations visuelles nécessaires. Recette navigateur : générer,
+constater la disparition des anciens appels, modifier un texte, ouvrir le résumé,
+vérifier le texte actualisé et les liens, fermer puis rouvrir au clavier.
