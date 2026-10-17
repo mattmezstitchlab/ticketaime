@@ -1,4 +1,4 @@
-import { ROLES, recommendPieces, type PieceRole, type PieceStep } from '../../data/pieceRoles';
+import { recommendPieces, type PieceStep } from '../../data/pieceRoles';
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { USAGE_STORIES, type CreationDraft } from "../../data/landing";
 import PiecePreview from "./PiecePreview";
@@ -14,7 +14,6 @@ interface IdeaPrinterProps {
 }
 
 export default function IdeaPrinter({ onScenario }: IdeaPrinterProps) {
-  const [role, setRole] = useState<PieceRole>('organizer');
   const [brief, setBrief] = useState("");
   const [draft, setDraft] = useState<CreationDraft | null>(null);
   const [phase, setPhase] = useState<"idle" | "printing" | "ready">("idle");
@@ -36,7 +35,7 @@ export default function IdeaPrinter({ onScenario }: IdeaPrinterProps) {
       return;
     }
     setError("");
-    const next = recommendPieces(brief, role);
+    const next = recommendPieces(brief, 'organizer');
     setDraft(next[0].draft);
     setPhase("printing");
     if (timer.current) clearTimeout(timer.current);
@@ -53,8 +52,6 @@ export default function IdeaPrinter({ onScenario }: IdeaPrinterProps) {
 
   return (
     <div className={`idea-printer idea-printer--${phase}`}>
-      <label className="role-picker">Je prépare en tant que <select value={role} disabled={phase === 'printing'} onChange={(e) => { setRole(e.target.value as PieceRole); onScenario?.([]); setDraft(null); setPhase('idle'); }}>{Object.entries(ROLES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-      <p className="role-notice">Rôle déclaré : recommandations de brouillons, pas autorisation vérifiée. Ne saisissez aucune donnée d’invité ni information de santé dans ce champ.</p>
       <form className="idea-form" onSubmit={print} noValidate>
         <label htmlFor="creation-brief" className="sr-only">Décrivez la pièce que vous souhaitez créer</label>
         <input
@@ -66,7 +63,7 @@ export default function IdeaPrinter({ onScenario }: IdeaPrinterProps) {
           maxLength={360}
           value={brief}
           onChange={(e) => { setBrief(e.target.value); if (error) setError(""); }}
-          placeholder="Un mariage, une soirée, un mot doux…"
+          placeholder="Racontez votre rêve ou votre projet…"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? "brief-error" : "brief-help"}
         />

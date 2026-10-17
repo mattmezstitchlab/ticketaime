@@ -28,7 +28,7 @@ export default function WalletView({
   const visibleCategories = CATEGORIES.filter(category => !["monnaies", "billets", "sceaux"].includes(category.id));
   const currentCat = CATEGORIES.find((c) => c.id === activeCat) ?? CATEGORIES[0];
   const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  const catItems = ITEMS.filter((it) => it.category === activeCat && normalize(it.name).includes(normalize(searchQuery.trim())));
+  const catItems = ITEMS.filter((it) => !["web-login", "web-newsletter", "web-buttons"].includes(it.id) && it.category === activeCat && normalize(it.name).includes(normalize(searchQuery.trim())));
 
   const handleTabChange = (catId: CategoryId) => {
     setActiveCat(catId);

@@ -35,7 +35,7 @@ interface LandingProps {
   onCatalogue?: () => void;
 }
 
-export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
+export default function Landing({ onCommencer }: LandingProps) {
   const [scenario, setScenario] = useState<PieceStep[]>(loadScenario);
   const [saveError, setSaveError] = useState('');
   const saveScenario = (steps: PieceStep[]) => {
@@ -48,11 +48,8 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
       <header className="lma-nav">
         <a className="lma-wordmark" href="#accueil" aria-label="Le Monde Aime, accueil">LE MONDE AIME<span className="wordmark-period">.</span></a>
         <nav aria-label="Navigation principale" className="lma-nav-links">
-          <a href="/?page=professionnels">Prestataires & wallet</a>
           <a href={scenario.length ? "#story-title" : "#experience"}>L'expérience</a>
           <a href="#usages">Les usages</a>
-          <a href="/?page=guide">Les 168 pièces · guide</a>
-          {onCatalogue && <button type="button" onClick={onCatalogue}>Le catalogue</button>}
         </nav>
         <button type="button" className="lma-nav-cta" onClick={() => onCommencer()}>Ouvrir l'atelier <Arrow diagonal /></button>
       </header>
@@ -80,8 +77,8 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
             <p className="lma-eyebrow hero-intro">Les petits papiers font les grandes histoires</p>
             <h1 id="hero-brand" className="sr-only">Le Monde Aime — votre parcours en pièces</h1>
             <VideoPostcard hero />
-            <h2>Donnez une forme<br />à vos belles idées.</h2>
-            <p className="hero-description">Un billet, une invitation, un souvenir.<br className="mobile-break" /> Tout commence par quelques mots.</p>
+            <h2>Quel projet aimeriez-vous<br />faire vivre ?</h2>
+            <p className="hero-description">Un projet, des tickets, une histoire à construire.<br className="mobile-break" /> Tout commence par quelques mots.</p>
             <IdeaPrinter onOpen={onCommencer} onScenario={saveScenario} />
           </div>
           <a href="#usages" className="hero-scroll">Et dans la vraie vie ? <svg viewBox="0 0 16 22" width="12" height="18" aria-hidden="true" fill="none" stroke="currentColor"><path d="M8 1v18M2 13l6 6 6-6" /></svg></a>
@@ -154,8 +151,6 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
       </main>
 
       <footer className="lma-footer">
-        <p className="lma-container"><a href="/?page=professionnels">Découvrir le parcours prestataire et le wallet-calendrier →</a></p>
-        <p className="lma-container"><a href="/?page=guide">Explorer les 168 pièces : usages, avantages et limites fiscales →</a></p>
         <div className="lma-container footer-top">
           <a href="#accueil" className="lma-wordmark">LE MONDE AIME.</a>
           <p>Les petits papiers. Les grandes histoires.</p>
@@ -170,7 +165,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
     <nav className="story-dock" aria-label="Commandes du parcours">
       <a href={scenario.length ? '#usages' : '#creation-brief'}>{scenario.length ? 'Mon parcours' : 'Créer'}</a>
       <a href="#video-postcard">Présentation</a>
-      <a href={scenario.length ? '#story-recap-control' : '/?page=guide'}>{scenario.length ? 'Raconter' : 'Les pièces'}</a>
+      {scenario.length > 0 && <a href="#story-recap-control">Raconter</a>}
       <a href="#accueil">↑ Haut</a>
     </nav>
     </>

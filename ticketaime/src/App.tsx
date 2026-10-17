@@ -5,7 +5,7 @@ import Catalogue from "./components/Catalogue";
 import PieceGuide from "./components/PieceGuide";
 import Landing from "./components/Landing";
 import ModuleView from "./components/ModuleView";
-import { CATEGORIES, ITEMS } from "./data/catalogue";
+import { ITEMS } from "./data/catalogue";
 import { moduleIdFromLocation } from "./lib/atlas";
 import type { CreationDraft } from "./data/landing";
 
@@ -104,10 +104,7 @@ export default function App() {
 
   // ── Vue landing (accueil) ou studio ──
   if (vue === "landing") {
-    return <Landing onCommencer={ouvrirStudio} onCatalogue={() => {
-      setVue("catalogue");
-      window.scrollTo({ top: 0, behavior: "instant" });
-    }} />;
+    return <Landing onCommencer={ouvrirStudio} />;
   }
 
   return (
@@ -121,7 +118,7 @@ export default function App() {
           >
             <span className="text-[15px] font-bold tracking-tight text-neutral-900">Le Monde Aime</span>
             <span className="hidden sm:inline text-[11px] text-neutral-500">
-              atelier · {TOTAL} pièces · {CATEGORIES.length} catégories
+              atelier de tickets
             </span>
           </button>
 
@@ -133,13 +130,7 @@ export default function App() {
             >
               Studio
             </button>
-            <button
-              type="button"
-              onClick={() => setVue("catalogue")}
-              className="px-3 h-7 rounded-[8px] text-[12px] font-medium text-neutral-500 hover:text-neutral-800"
-            >
-              Catalogue
-            </button>
+
           </div>
         </div>
       </header>

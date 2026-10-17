@@ -4,7 +4,6 @@ import Ticket from "./Ticket";
 import Inspector, { type PieceCustomization } from "./Inspector";
 import WalletView from "./WalletView";
 import CreateMenu, { type ChoixCreation } from "./CreateMenu";
-import SecurityBadge from "./SecurityBadge";
 import EditionOverlay from "./EditionOverlay";
 import { CATEGORIES, ITEMS, type CategoryId, type Item } from "../data/catalogue";
 import { LAYOUTS, applyLayout, type LayoutId } from "../lib/layouts";
@@ -42,7 +41,6 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
   const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(initialCreation ? `idea-${initialCreation.id}` : null);
   const [layoutMenuOpen, setLayoutMenuOpen] = useState(false);
   const [edition, setEdition] = useState<EditionId>(initialCreation?.edition ?? "classique");
-  const [securiteVisible, setSecuriteVisible] = useState(false);
   const [mobileInspectorOpen, setMobileInspectorOpen] = useState(false);
 
   const zCounter = useRef(10);
@@ -265,16 +263,7 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
             >
               {EDITIONS[edition].nom}
             </span>
-            <button
-              type="button"
-              onClick={() => setSecuriteVisible(!securiteVisible)}
-              title="Afficher / masquer les sceaux de sécurité"
-              className={`h-8 px-2.5 rounded-lg text-[12px] font-medium transition-all ${
-                securiteVisible ? "bg-green-600 text-white" : "bg-neutral-100 text-neutral-600"
-              }`}
-            >
-              ✓ Certificat
-            </button>
+
           </div>
 
           {/* Segmented Table / Wallets */}
@@ -436,14 +425,6 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
                     >
                       {/* @ts-ignore */}
                       <catalogueItem.Component personnalisation={perso} />
-                      {securiteVisible && (
-                        <SecurityBadge
-                          categorie={catalogueItem.category}
-                          pieceId={catalogueItem.id}
-                          nom={catalogueItem.name}
-                          compact
-                        />
-                      )}
                       {!cust.brief && <EditionOverlay edition={EDITIONS[edition]} categorie={catalogueItem.category} compact />}
                     </Ticket>
                     {href && (
