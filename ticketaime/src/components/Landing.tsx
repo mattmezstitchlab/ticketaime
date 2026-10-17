@@ -53,11 +53,12 @@ export default function Landing({ onCommencer, onCatalogue, printer }: LandingPr
           <a href={scenario.length ? "#story-title" : "#experience"}>L'expérience</a>
           <a href="#usages">Les usages</a>
         </nav>
-        <button type="button" className="lma-nav-cta" onClick={() => onCatalogue ? onCatalogue() : onCommencer()}>{printer ? "Mon wallet" : "Ouvrir l’atelier"} <Arrow diagonal /></button>
+        <button type="button" className="lma-nav-cta" onClick={() => onCatalogue ? onCatalogue() : onCommencer()}>{printer ? "Les tickets" : "Ouvrir l’atelier"} <Arrow diagonal /></button>
       </header>
 
       <main>
         <section className="lma-hero" id="accueil" aria-labelledby="hero-brand">
+          <VideoPostcard hero />
           <div className="hero-ephemera" aria-hidden="true">
             <div className="hero-float hero-float--mail" style={{ "--tilt": "-14deg", "--delay": "-1s" } as CSSProperties}>
               <PiecePreview itemId="airmail-large" decorative />
@@ -78,7 +79,6 @@ export default function Landing({ onCommencer, onCatalogue, printer }: LandingPr
           <div className="hero-center">
             <p className="lma-eyebrow hero-intro">Les petits papiers font les grandes histoires</p>
             <h1 id="hero-brand" className="sr-only">Le Monde Aime — votre parcours en pièces</h1>
-            <VideoPostcard hero />
             <h2>Quel projet aimeriez-vous<br />faire vivre ?</h2>
             <p className="hero-description">Un projet, des tickets, une histoire à construire.<br className="mobile-break" /> Tout commence par quelques mots.</p>
             {printer ?? <IdeaPrinter onOpen={onCommencer} onScenario={saveScenario} />}

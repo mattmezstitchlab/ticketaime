@@ -309,7 +309,7 @@ export default function FunctionWallet() {
             <button onClick={() => go("home")}>L’expérience</button>
           </nav>
           <button className="lma-nav-cta" onClick={() => go("wallet")}>
-            Mon wallet <span>{wallet.length}</span>
+            Mes tickets <span>{wallet.length}</span>
             <Arrow diagonal />
           </button>
         </header>
@@ -460,7 +460,7 @@ export default function FunctionWallet() {
                 </p>
               )}
               <button className="fw-primary" onClick={() => go("wallet")}>
-                Explorer tous les outils du wallet →
+                Explorer tous les outils →
               </button>
             </div>
           }
@@ -468,9 +468,9 @@ export default function FunctionWallet() {
       )}
       {view === "wallet" && (
         <main className="fw-wallet">
-          <p className="fw-eyebrow">LE WALLET TICKETAIME</p>
+          <p className="fw-eyebrow">LA COLLECTION</p>
           <h1 ref={title} tabIndex={-1}>
-            Tous vos petits outils.
+            Des tickets pour chaque envie.
           </h1>
           <p>
             Explorez les fonctions et leurs modèles. Vos créations restent dans
@@ -539,10 +539,10 @@ export default function FunctionWallet() {
                 ))}
               </div>
               <section className="fw-models">
-                <h2>La collection de tickets</h2>
+                <h2>Les tickets</h2>
                 <p>
-                  Les pochettes d’origine, avec un usage pour chaque pièce.
-                  Cliquez sur un ticket pour ouvrir son atelier.
+                  Un usage pour chaque ticket, présenté simplement sur fond
+                  blanc. Cliquez sur un ticket pour ouvrir son atelier.
                 </p>
                 <div className="fw-pocket-surface">
                   <WalletView

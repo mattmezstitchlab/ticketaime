@@ -123,3 +123,17 @@ Cette étape n’est pas activée : pas de fausse API publique, de stockage en m
 présenté comme durable, de secret dans le client ou de promesse d’envoi serveur.
 La mise en place d’une base dédiée doit être approuvée avant provisionnement ;
 aucun coût de service ni mutation d’infrastructure n’a été engagé ici.
+
+## Direction simplifiée — vidéo en fond et collection blanche
+
+La vidéo locale existante passe en fond pleine largeur/hauteur du hero, avec
+`object-fit: cover`, un voile de lisibilité et les quatre tickets flottants
+superposés. La lecture est muette, en boucle et désactivée initialement si la
+réduction des animations est demandée ; un contrôle visible permet pause/lecture.
+La vidéo décorative n’est plus présentée dans un cadre de carte postale.
+
+Le mode fonctionnel de la collection retire classeur, anneaux, plastique et fond
+sombre : tickets seuls sur fond blanc, catégories et recherche, légende discrète.
+Même présentation pour les créations gardées. Les usages et l’édition individuelle
+restent inchangés. La vue historique non fonctionnelle reste disponible dans les
+sources. Aucun travail serveur, base ou mise en production ajouté à cette étape.

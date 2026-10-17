@@ -117,7 +117,7 @@ test("accueil rendu avec les deux entrées, wallet et fente, sans canevas", () =
   const html = renderToStaticMarkup(createElement(FunctionWallet));
   assert.ok(html.includes("Une envie ou une question"));
   assert.ok(html.includes("J’ai reçu un code / lien"));
-  assert.ok(html.includes("Mon wallet"));
+  assert.ok(html.includes("Les tickets"));
   assert.ok(html.includes("printer-slot"));
   assert.ok(!html.includes("canvas-dots"));
 });
@@ -134,6 +134,8 @@ test("l’accueil conserve les éléments réels du design original, sans le chr
     "hero-float--photo",
     "hero-float--stamp",
     "postcard-scene--hero",
+    "hero-background-video",
+    "Mettre la vidéo en pause",
     "/videos/le-monde-aime-postcard.mp4",
     "printer-case",
     "printer-led",

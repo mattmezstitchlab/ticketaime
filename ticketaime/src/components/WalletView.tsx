@@ -86,6 +86,107 @@ export default function WalletView({
     onSelectCategory?.(catId);
   };
 
+  if (functional)
+    return (
+      <section className="original-pocket-book functional-pocket-book plain-ticket-collection">
+        <label className="workshop-pocket-search">
+          Rechercher un ticket
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(event) => onSearchQuery?.(event.target.value)}
+            placeholder="Nom d’un ticket…"
+          />
+        </label>
+        <nav className="plain-category-tabs" aria-label="Catégories de tickets">
+          {visibleCategories.map((c) => (
+            <button
+              key={c.id}
+              className="pocket-tab"
+              aria-pressed={c.id === category}
+              onClick={() => handleTabChange(c.id)}
+            >
+              {c.name}{" "}
+              <span>
+                (
+                {entries
+                  ? entries.filter((e) => e.item.category === c.id).length
+                  : ITEMS.filter((i) => i.category === c.id).length}
+                )
+              </span>
+            </button>
+          ))}
+        </nav>
+        <h3>{currentCat.name}</h3>
+        <p className="plain-collection-count">
+          {pocketEntries.length}{" "}
+          {entries ? "tickets gardés" : "modèles à personnaliser"}
+        </p>
+        {!pocketEntries.length && (
+          <p role="status">
+            Aucun ticket dans cette catégorie pour cette recherche.
+          </p>
+        )}
+        <div className="plain-ticket-grid">
+          {pocketEntries.map((entry) => {
+            const item = entry.item;
+            const Component = item.Component as ComponentType<{
+              personnalisation?: Record<string, string>;
+            }>;
+            return (
+              <div
+                key={entry.id}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (
+                    event.target === event.currentTarget &&
+                    ["Enter", " "].includes(event.key)
+                  ) {
+                    event.preventDefault();
+                    if (entries) onOpenEntry?.(entry);
+                    else onSelectItem(item);
+                  }
+                }}
+                className="plain-ticket-choice"
+                data-pocket-entry={entry.id}
+                data-atlas-module={item.id}
+                aria-label={`${entries ? "Ouvrir" : "Personnaliser"} ${entry.label || item.name}`}
+                onClick={() =>
+                  entries ? onOpenEntry?.(entry) : onSelectItem(item)
+                }
+              >
+                <div className="plain-ticket-art" inert>
+                  <div
+                    style={{
+                      width: Math.min(300, (200 * item.w) / item.h),
+                      maxWidth: "100%",
+                    }}
+                  >
+                    {renderEntry ? (
+                      renderEntry(entry)
+                    ) : (
+                      <Ticket
+                        w={item.w}
+                        h={item.h}
+                        rotate={0}
+                        label={item.name}
+                        caption={false}
+                        disableReveal
+                      >
+                        <Component personnalisation={entry.fields} />
+                      </Ticket>
+                    )}
+                  </div>
+                </div>
+                <strong>{entry.label || item.name}</strong>
+                <span>{onSelectFunction?.(item) || "Ouvrir ce ticket"} →</span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    );
   return (
     <div
       className={`original-pocket-book w-full max-w-[1400px] mx-auto select-none my-6 ${functional ? "functional-pocket-book" : ""}`}

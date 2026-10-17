@@ -165,7 +165,7 @@ test("carte postale : timbre, modèle, message, collage, reprise et filtres du w
   assert.equal(saved()[0].details.message, "Bonjour Élodie !");
   await act(async () => root.unmount());
   await mount();
-  await click(button("Mon wallet"));
+  await click(button("Les tickets"));
   await click(button("Mes tickets gardés"));
   assert.equal(document.querySelectorAll("[data-pocket-entry]").length, 1);
   await click(document.querySelector("[data-pocket-entry]"));
@@ -232,7 +232,7 @@ test("les scènes photographiques d’origine ouvrent le nouvel atelier, pas le 
   await act(async () => root.unmount());
 });
 
-test("pochettes originales : 19 catégories, ouverture clavier sans bouton Table et modèles inertes", async () => {
+test("collection blanche : 19 catégories, contrôles accessibles sans classeur ni Table et modèles inertes", async () => {
   localStorage.clear();
   window.history.replaceState(null, "", "/");
   await mount();
@@ -242,7 +242,8 @@ test("pochettes originales : 19 catégories, ouverture clavier sans bouton Table
   );
   assert.ok(book);
   assert.equal(book.querySelectorAll(".pocket-tab").length, 19);
-  assert.ok(book.textContent.includes("Pochette transparente"));
+  assert.ok(book.classList.contains("plain-ticket-collection"));
+  assert.equal(book.textContent.includes("Pochette transparente"), false);
   assert.equal(
     [...book.querySelectorAll("button")].some((el) =>
       el.textContent.includes("+ Table"),
@@ -255,12 +256,13 @@ test("pochettes originales : 19 catégories, ouverture clavier sans bouton Table
   await fill(field("Catégorie"), "postale");
   const pocket = book.querySelector("[data-pocket-entry]");
   assert.equal(pocket.getAttribute("role"), "button");
-  assert.equal(pocket.getAttribute("tabindex"), "0");
+  assert.equal(pocket.tabIndex, 0);
   await act(async () =>
     pocket.dispatchEvent(
       new window.KeyboardEvent("keydown", { key: "Enter", bubbles: true }),
     ),
   );
+
   assert.ok(document.querySelector(".fw-editor"));
   assert.equal(document.querySelector("canvas"), null);
   await act(async () => root.unmount());
@@ -299,5 +301,36 @@ test("atelier : dupliquer conserve le contenu avec un nouveau code et imprimer a
       .querySelector(".original-pocket-book")
       .textContent.includes("2 tickets gardés"),
   );
+  await act(async () => root.unmount());
+});
+
+test("hero : vidéo de fond derrière les tickets, pause et réduction des animations", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  await mount();
+  const hero = document.querySelector(".lma-hero");
+  const background = hero.querySelector(".hero-background-video");
+  assert.equal(background.parentElement, hero);
+  const video = background.querySelector("video");
+  assert.equal(video.getAttribute("aria-hidden"), "true");
+  assert.equal(video.controls, false);
+  assert.equal(video.loop, true);
+  assert.equal(video.muted, true);
+  assert.equal(
+    video.querySelector("source").getAttribute("src"),
+    "/videos/le-monde-aime-postcard.mp4",
+  );
+  assert.ok(hero.querySelectorAll(".hero-float").length >= 4);
+  assert.ok(button("Lire la vidéo"));
+  let played = 0;
+  video.play = async () => {
+    played++;
+  };
+  await click(button("Lire la vidéo"));
+  assert.equal(played, 1);
+  await act(async () =>
+    video.dispatchEvent(new window.Event("play", { bubbles: true })),
+  );
+  assert.ok(button("Mettre la vidéo en pause"));
   await act(async () => root.unmount());
 });
