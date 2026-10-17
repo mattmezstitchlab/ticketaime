@@ -42,6 +42,7 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
     try { localStorage.setItem(STORY_KEY, JSON.stringify(steps)); setSaveError(''); } catch { setSaveError('Parcours non sauvegardé : stockage local indisponible.'); }
   };
   return (
+    <>
     <div className="lma-page">
       <header className="lma-nav">
         <a className="lma-wordmark" href="#accueil" aria-label="Le Monde Aime, accueil">LE MONDE AIME<span className="wordmark-period">.</span></a>
@@ -161,5 +162,12 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
         </div>
       </footer>
     </div>
+    <nav className="story-dock" aria-label="Commandes du parcours">
+      <a href={scenario.length ? '#usages' : '#creation-brief'}>{scenario.length ? 'Mon parcours' : 'Créer'}</a>
+      <a href="#video-postcard">Présentation</a>
+      <a href={scenario.length ? '#story-recap-control' : '/?page=guide'}>{scenario.length ? 'Raconter' : 'Les pièces'}</a>
+      <a href="#accueil">↑ Haut</a>
+    </nav>
+    </>
   );
 }

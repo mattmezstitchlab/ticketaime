@@ -237,3 +237,5 @@
 @media (prefers-reduced-motion: reduce) { .video-postcard { transform: none; } }
 .role-picker{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;font-size:12px;margin-bottom:12px}.role-picker select{background:#fffdf5;color:#292820;border:1px solid #aaa08d;border-radius:8px;padding:8px;max-width:100%;font:inherit}.role-notice{font-size:11px;line-height:1.5;color:#6e7265;margin:10px 0 14px}.piece-next{text-align:left;background:#fffdf5;border:1px solid #d2cbbb;border-radius:12px;padding:18px;font-size:12px;line-height:1.6;margin-top:16px;color:#292820}.piece-next p{margin:8px 0}.piece-next .printer-open{margin-top:12px;text-align:left}
 #video-postcard{scroll-margin-top:24px}.postcard-next{text-align:center;margin:24px auto 0!important;font-size:12px;color:#6e7265}.postcard-next a{color:inherit;text-decoration:none}
+/* Outside .lma-page: isolation/overflow cannot clip the fixed controller. */
+.story-dock{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",sans-serif;z-index:1000}.story-dock a:focus-visible{outline:2px solid #647966;outline-offset:2px}.lma-footer{padding-bottom:100px}
