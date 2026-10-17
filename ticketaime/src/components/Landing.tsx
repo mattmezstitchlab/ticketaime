@@ -78,8 +78,9 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
           <a href="#usages" className="hero-scroll">Et dans la vraie vie ? <svg viewBox="0 0 16 22" width="12" height="18" aria-hidden="true" fill="none" stroke="currentColor"><path d="M8 1v18M2 13l6 6 6-6" /></svg></a>
         </section>
 
-        {scenario.length > 0 && <StoryJourney key={scenario[0].draft.id} steps={scenario} onOpen={onCommencer} />}
         <VideoPostcard />
+        {scenario.length > 0 && <StoryJourney key={scenario[0].draft.id} steps={scenario} onOpen={onCommencer} />}
+
 
         {scenario.length === 0 && <section id="usages" aria-labelledby="usages-title" className="lma-usages">
           <Reveal className="usage-intro lma-container">

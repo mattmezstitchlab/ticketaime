@@ -13,10 +13,8 @@ interface IdeaPrinterProps {
   onScenario?: (steps: PieceStep[]) => void;
 }
 
-export default function IdeaPrinter({ onOpen, onScenario }: IdeaPrinterProps) {
+export default function IdeaPrinter({ onScenario }: IdeaPrinterProps) {
   const [role, setRole] = useState<PieceRole>('organizer');
-  const [steps, setSteps] = useState<PieceStep[]>([]);
-  const [stepIndex, setStepIndex] = useState(0);
   const [brief, setBrief] = useState("");
   const [draft, setDraft] = useState<CreationDraft | null>(null);
   const [phase, setPhase] = useState<"idle" | "printing" | "ready">("idle");
@@ -39,7 +37,7 @@ export default function IdeaPrinter({ onOpen, onScenario }: IdeaPrinterProps) {
     }
     setError("");
     const next = recommendPieces(brief, role);
-    setSteps(next); setStepIndex(0); setDraft(next[0].draft);
+    setDraft(next[0].draft);
     setPhase("printing");
     if (timer.current) clearTimeout(timer.current);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -55,7 +53,7 @@ export default function IdeaPrinter({ onOpen, onScenario }: IdeaPrinterProps) {
 
   return (
     <div className={`idea-printer idea-printer--${phase}`}>
-      <label className="role-picker">Je prépare en tant que <select value={role} disabled={phase === 'printing'} onChange={(e) => { setRole(e.target.value as PieceRole); onScenario?.([]); setDraft(null); setSteps([]); setPhase('idle'); }}>{Object.entries(ROLES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      <label className="role-picker">Je prépare en tant que <select value={role} disabled={phase === 'printing'} onChange={(e) => { setRole(e.target.value as PieceRole); onScenario?.([]); setDraft(null); setPhase('idle'); }}>{Object.entries(ROLES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
       <p className="role-notice">Rôle déclaré : recommandations de brouillons, pas autorisation vérifiée. Ne saisissez aucune donnée d’invité ni information de santé dans ce champ.</p>
       <form className="idea-form" onSubmit={print} noValidate>
         <label htmlFor="creation-brief" className="sr-only">Décrivez la pièce que vous souhaitez créer</label>
@@ -95,8 +93,8 @@ export default function IdeaPrinter({ onOpen, onScenario }: IdeaPrinterProps) {
               key={draft.id}
               className="printed-piece"
               disabled={phase !== "ready"}
-              onClick={() => onOpen(draft)}
-              aria-label={`Ouvrir ma pièce ${usage?.title ?? "personnalisée"} dans le canevas`}
+              onClick={() => document.getElementById('video-postcard')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })}
+              aria-label={`Découvrir le parcours ${usage?.title ?? "personnalisé"} avec la carte postale vidéo`}
               data-printed-module={draft.itemId}
               style={printedItem ? { width: Math.min(340, 158 * printedItem.w / printedItem.h), maxWidth: "100%", marginInline: "auto" } : undefined}
             >
@@ -114,21 +112,11 @@ export default function IdeaPrinter({ onOpen, onScenario }: IdeaPrinterProps) {
           {phase === "printing" && <span>Un peu d'encre. Beaucoup de possibilités.</span>}
           {phase === "ready" && <>
             <strong>Votre pièce est prête.</strong>
-            <button type="button" onClick={() => draft && onOpen(draft)} className="printer-open">Cliquez pour ouvrir le canevas <Arrow /></button>
+            <button type="button" onClick={() => document.getElementById('video-postcard')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })} className="printer-open">Découvrir votre parcours <Arrow /></button>
           </>}
         </div>
       </div>
-      {phase === 'ready' && steps[stepIndex] && <section className="piece-next" aria-label="Parcours de pièces complémentaires">
-        <p>Pièce {stepIndex + 1} / {steps.length} · {steps[stepIndex].title}</p>
-        <p><strong>Pour :</strong> {steps[stepIndex].recipient}</p><p><strong>Pourquoi :</strong> {steps[stepIndex].reason}</p><p>{steps[stepIndex].privacy}</p>
-        <p>Aucun envoi, collecte RSVP, paiement ou accès réel. Personnalisez le brouillon dans le canevas ; le partage sécurisé reste à connecter.</p>
-        {stepIndex + 1 < steps.length && <button type="button" className="printer-open" onClick={() => {
-          const next = stepIndex + 1; setStepIndex(next); setDraft(steps[next].draft); setPhase('printing');
-          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          timer.current = setTimeout(() => { setPhase('ready'); requestAnimationFrame(() => result.current?.focus({ preventScroll: true })); }, reduced ? 100 : 2100);
-        }}>Imprimer le brouillon suivant : {steps[stepIndex + 1].title} <Arrow /></button>}
-        {stepIndex > 0 && <button type="button" className="printer-open" onClick={() => { setStepIndex(stepIndex - 1); setDraft(steps[stepIndex - 1].draft); }}>Revoir la pièce précédente</button>}
-      </section>}
+
     </div>
   );
 }

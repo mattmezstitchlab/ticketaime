@@ -14,7 +14,7 @@ export default function VideoPostcard() {
     return () => media.removeEventListener("change", update);
   }, []);
   return (
-    <section className="postcard-scene" aria-labelledby="postcard-title">
+    <section id="video-postcard" className="postcard-scene" aria-labelledby="postcard-title">
       <figure className="video-postcard">
         <div className="video-postcard-heading">
           <span>LE MONDE AIME · CORRESPONDANCE</span>
@@ -29,6 +29,7 @@ export default function VideoPostcard() {
           <p className="video-postcard-note">À garder, à regarder,<br />à envoyer avec le cœur.<span>LE MONDE AIME.</span></p>
         </figcaption>
       </figure>
+      <p className="postcard-next"><a href="#usages">Poursuivre votre histoire ↓</a></p>
     </section>
   );
 }

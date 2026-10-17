@@ -30,3 +30,6 @@ Recette navigateur à réaliser : générer un scénario, changer titre/texte/fo
 charger image puis vidéo, revenir au visuel initial, tester fichier invalide,
 changer de rôle et ouvrir une pièce dans le canevas. Vérifier mobile et commandes
 vidéo. Les contrôles automatisés ne remplacent pas cette validation visuelle.
+
+## Parcours simplifié
+La pièce imprimée mène maintenant à la carte postale vidéo, placée avant les sections. Le bloc explicatif sous la fente et les boutons canevas des sections sont retirés. Les précautions restent dans des détails dépliables. La vidéo ne parle pas automatiquement, ne suit pas le scroll et aucun assistant vocal, traduction ou personnage alternatif n’est connecté.
