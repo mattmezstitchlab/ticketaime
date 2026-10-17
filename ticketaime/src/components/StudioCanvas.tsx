@@ -23,20 +23,14 @@ export interface CanvasItemInstance {
 const INITIAL_PRESET_IDS = [
   "rose-stamp",
   "kraft-pass",
-  "token-nyc-1953",
-  "piece-1f-semeuse",
   "carte-mer",
   "polaroid-plage",
-  "billet-100f-delacroix",
-  "tampon-paye",
-  "sceau-fleur-de-lys",
-  "web-hero",
 ];
 
 const blankCustom = (it?: Item): PieceCustomization => {
   const fields: Record<string, string> = {};
   (it?.editable ?? []).forEach((c) => { fields[c.cle] = c.valeur; });
-  return { fields, actions: {}, rotate: it?.rotate ?? 0, scale: 1 };
+  return { fields, actions: {}, rotate: it?.rotate ?? 0, scale: 0.65 };
 };
 
 export default function StudioCanvas({ initialCreation }: { initialCreation?: CreationDraft | null }) {
@@ -48,7 +42,7 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
   const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(initialCreation ? `idea-${initialCreation.id}` : null);
   const [layoutMenuOpen, setLayoutMenuOpen] = useState(false);
   const [edition, setEdition] = useState<EditionId>(initialCreation?.edition ?? "classique");
-  const [securiteVisible, setSecuriteVisible] = useState(!initialCreation);
+  const [securiteVisible, setSecuriteVisible] = useState(false);
   const [mobileInspectorOpen, setMobileInspectorOpen] = useState(false);
 
   const zCounter = useRef(10);
@@ -70,19 +64,7 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
         },
       }];
     }
-    return INITIAL_PRESET_IDS.map((id, index) => {
-      const it = ITEMS.find((i) => i.id === id);
-      const col = index % 4;
-      const row = Math.floor(index / 4);
-      return {
-        instanceId: `inst-${id}-init-${index}`,
-        itemId: id,
-        x: 60 + col * 260 + (index % 2 ? 15 : -15),
-        y: 50 + row * 240 + (index % 3 ? 10 : -10),
-        zIndex: index + 1,
-        customization: blankCustom(it),
-      };
-    });
+    return [];
   });
 
   const selectedInstance = useMemo(
@@ -396,7 +378,7 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
           onClick={() => setSelectedInstanceId(null)}
         >
           {viewMode === "canvas" ? (
-            <div id="atelier-preview" className="relative w-full min-h-[1200px] max-w-[1400px] mx-auto select-none">
+            <div id="atelier-preview" className="relative w-full min-h-[700px] max-w-[1400px] mx-auto select-none">
               {canvasItems.length === 0 && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                   <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center text-2xl mb-3">
@@ -404,8 +386,9 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
                   </div>
                   <h3 className="font-semibold text-[15px] text-white/80 m-0">Table vide</h3>
                   <p className="text-[12px] text-white/40 max-w-[280px] mt-1">
-                    Posez des pièces depuis la bibliothèque, ou choisissez une mise en page.
+                    Choisissez votre premier ticket dans « Les tickets », puis personnalisez-le.
                   </p>
+                  <button type="button" className="pointer-events-auto mt-4 rounded px-4 py-2 bg-[#f5f3ee] text-[#262723] text-xs" onClick={event => { event.stopPropagation(); setViewMode('wallet'); }}>Choisir un ticket</button>
                 </div>
               )}
 

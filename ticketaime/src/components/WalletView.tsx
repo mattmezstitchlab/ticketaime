@@ -22,9 +22,10 @@ export default function WalletView({
   onDropOnCanvas,
 }: WalletViewProps) {
   const [activeCat, setActiveCat] = useState<CategoryId>(
-    selectedCategory === "tout" ? "voyage" : selectedCategory,
+    selectedCategory === "tout" || ["monnaies", "billets", "sceaux"].includes(selectedCategory) ? "voyage" : selectedCategory,
   );
 
+  const visibleCategories = CATEGORIES.filter(category => !["monnaies", "billets", "sceaux"].includes(category.id));
   const currentCat = CATEGORIES.find((c) => c.id === activeCat) ?? CATEGORIES[0];
   const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const catItems = ITEMS.filter((it) => it.category === activeCat && normalize(it.name).includes(normalize(searchQuery.trim())));
@@ -41,7 +42,7 @@ export default function WalletView({
       </label>
       {/* ---------------- Category Binder Tabs ---------------- */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] px-4">
-        {CATEGORIES.map((c) => {
+        {visibleCategories.map((c) => {
           const isActive = c.id === activeCat;
           return (
             <button
