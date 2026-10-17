@@ -1,3 +1,4 @@
+import { LANDING_COLLAGES } from '../data/landingCollages';
 import { packageFromBrief } from '../data/ticketPackages';
 import { loadScenario, STORY_KEY } from '../data/storyStorage';
 import StoryJourney from './landing/StoryJourney';
@@ -115,8 +116,8 @@ export default function Landing({ onCommencer }: LandingProps) {
                   <button type="button" className="scene-cta" onClick={() => onCommencer(packageFromBrief(usage.sample, usage.id))}>Ouvrir ce pack dans l’atelier <Arrow diagonal /></button>
                 </Reveal>
                 <div className="usage-ticket-package" aria-label={`Pack de tickets : ${usage.title}`}>
-                  {packageFromBrief(usage.sample, usage.id).tickets?.map((ticket, i) => <div key={ticket.itemId} className="usage-package-ticket" style={{ '--ticket-index': i } as CSSProperties} inert><PiecePreview itemId={ticket.itemId} fields={ticket.fields} decorative /></div>)}
-                  <span className="usage-package-label">Pack de modèles personnalisables · aucun droit émis</span>
+                  {(LANDING_COLLAGES[usage.id] ?? [usage.itemId]).map((itemId, i) => <div key={itemId} className="usage-package-ticket" style={{ '--ticket-index': i } as CSSProperties} inert><PiecePreview itemId={itemId} fields={itemId === usage.itemId ? usage.fields : undefined} decorative /></div>)}
+                  <span className="usage-package-label">Sélection illustrative · pack personnalisable via le bouton</span>
                 </div>
                 <span className="scene-index" aria-hidden="true">{String(index + 1).padStart(2, "0")} <i /> {String(USAGE_STORIES.length).padStart(2, "0")}</span>
               </div>
