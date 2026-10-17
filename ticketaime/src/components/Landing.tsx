@@ -77,7 +77,8 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
           </div>
           <div className="hero-center">
             <p className="lma-eyebrow hero-intro">Les petits papiers font les grandes histoires</p>
-            <h1 id="hero-brand">LE MONDE AIME<span>.</span></h1>
+            <h1 id="hero-brand" className="sr-only">Le Monde Aime — votre parcours en pièces</h1>
+            <VideoPostcard hero />
             <h2>Donnez une forme<br />à vos belles idées.</h2>
             <p className="hero-description">Un billet, une invitation, un souvenir.<br className="mobile-break" /> Tout commence par quelques mots.</p>
             <IdeaPrinter onOpen={onCommencer} onScenario={saveScenario} />
@@ -86,7 +87,6 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
         </section>
 
         {saveError && <p role="alert" className="lma-container">{saveError}</p>}
-        <VideoPostcard />
         {scenario.length > 0 && <StoryJourney key={scenario[0].draft.id} steps={scenario} onClear={() => saveScenario([])} onOpen={onCommencer} />}
 
 
