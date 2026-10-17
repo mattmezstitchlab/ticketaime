@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { CATEGORIES, ITEMS } from "../data/catalogue";
+import {
+  CATEGORIES,
+  ITEMS,
+  type CategoryId,
+  type Item,
+} from "../data/catalogue";
 import {
   TOOLS,
   STORAGE_KEY,
@@ -12,6 +17,8 @@ import {
   type WalletTicket,
 } from "../data/functionWallet";
 import Landing from "./Landing";
+import WalletView from "./WalletView";
+import "../workshop.css";
 import { Arrow } from "./landing/IdeaPrinter";
 import PiecePreview from "./landing/PiecePreview";
 import "../function-wallet.css";
@@ -253,6 +260,29 @@ export default function FunctionWallet() {
     next.details.title = query.trim().slice(0, 360);
     setPrinted(next);
   };
+  const toolForModel = (model: Item) =>
+    TOOLS.find(
+      (t) =>
+        t.categories.includes(model.category) &&
+        !["quote", "invoice", "reservation"].includes(t.id),
+    ) ?? TOOLS[0];
+  const openModel = (model: Item) => {
+    const next = createTicket(toolForModel(model));
+    if (model.category === "timbre") next.details.stampModel = model.id;
+    else {
+      next.itemId = model.id;
+      next.fields = Object.fromEntries(
+        (model.editable ?? []).map((f) => [f.cle, f.valeur]),
+      );
+    }
+    open(next);
+  };
+  const savedEntries = wallet.map((t) => ({
+    id: t.id,
+    item: ITEMS.find((i) => i.id === t.itemId)!,
+    fields: { ...t.fields, ...t.details },
+    label: t.details.title || TOOLS.find((tool) => tool.id === t.toolId)!.name,
+  }));
   const printedItem = ITEMS.find(
     (i) =>
       i.id ===
@@ -455,7 +485,11 @@ export default function FunctionWallet() {
             </button>
             <button
               aria-pressed={tab === "saved"}
-              onClick={() => setTab("saved")}
+              onClick={() => {
+                setTab("saved");
+                setSearch("");
+                setCategory(savedEntries[0]?.item.category ?? "all");
+              }}
             >
               Mes tickets gardés ({wallet.length})
             </button>
@@ -504,57 +538,28 @@ export default function FunctionWallet() {
                   </button>
                 ))}
               </div>
-              {category !== "all" && (
-                <section className="fw-models">
-                  <h2>Les tickets de cette catégorie</h2>
-                  <p>
-                    Choisissez une pièce pour découvrir son usage et la
-                    personnaliser.
-                  </p>
-                  <div className="fw-tool-grid">
-                    {ITEMS.filter(
-                      (model) =>
-                        model.category === category &&
-                        model.name
-                          .toLocaleLowerCase("fr")
-                          .includes(search.toLocaleLowerCase("fr")),
-                    ).map((model) => {
-                      const modelTool = TOOLS.find(
-                        (t) =>
-                          t.categories.includes(model.category) &&
-                          !["quote", "invoice"].includes(t.id),
-                      )!;
-                      return (
-                        <button
-                          className="fw-model"
-                          key={model.id}
-                          onClick={() => {
-                            const next = createTicket(modelTool);
-                            if (model.category === "timbre")
-                              next.details.stampModel = model.id;
-                            else {
-                              next.itemId = model.id;
-                              next.fields = Object.fromEntries(
-                                (model.editable ?? []).map((f) => [
-                                  f.cle,
-                                  f.valeur,
-                                ]),
-                              );
-                            }
-                            open(next);
-                          }}
-                        >
-                          <div className="fw-model-art" inert>
-                            <PiecePreview itemId={model.id} decorative />
-                          </div>
-                          <strong>{model.name}</strong>
-                          <span>{modelTool.verb} →</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </section>
-              )}
+              <section className="fw-models">
+                <h2>La collection de tickets</h2>
+                <p>
+                  Les pochettes d’origine, avec un usage pour chaque pièce.
+                  Cliquez sur un ticket pour ouvrir son atelier.
+                </p>
+                <div className="fw-pocket-surface">
+                  <WalletView
+                    functional
+                    searchQuery={search}
+                    onSearchQuery={setSearch}
+                    selectedCategory={
+                      category === "all" ? "tout" : (category as CategoryId)
+                    }
+                    onSelectCategory={(cat) =>
+                      setCategory(cat === "tout" ? "all" : cat)
+                    }
+                    onSelectItem={openModel}
+                    onSelectFunction={(model) => toolForModel(model).verb}
+                  />
+                </div>
+              </section>
               {!shownTools.length && (
                 <p>
                   Aucun outil pour cette recherche. Changez de catégorie ou de
@@ -563,22 +568,31 @@ export default function FunctionWallet() {
               )}
             </>
           ) : (
-            <div className="fw-tool-grid">
+            <div className="fw-pocket-surface">
               {wallet.length ? (
-                wallet.map((t) => (
-                  <button
-                    key={t.id}
-                    className="fw-saved"
-                    onClick={() => open(t)}
-                  >
-                    <TicketFace ticket={t} small />
-                    <span>
-                      {t.details.title ||
-                        TOOLS.find((tool) => tool.id === t.toolId)?.name}{" "}
-                      →
-                    </span>
-                  </button>
-                ))
+                <WalletView
+                  key="saved"
+                  functional
+                  entries={savedEntries}
+                  searchQuery={search}
+                  onSearchQuery={setSearch}
+                  selectedCategory={
+                    category === "all" ? "tout" : (category as CategoryId)
+                  }
+                  onSelectCategory={(cat) =>
+                    setCategory(cat === "tout" ? "all" : cat)
+                  }
+                  onSelectItem={() => {}}
+                  onOpenEntry={(entry) =>
+                    open(wallet.find((t) => t.id === entry.id)!)
+                  }
+                  renderEntry={(entry) => (
+                    <TicketFace
+                      ticket={wallet.find((t) => t.id === entry.id)!}
+                      small
+                    />
+                  )}
+                />
               ) : (
                 <p>
                   Votre wallet est vide. Choisissez un outil, personnalisez
@@ -763,6 +777,23 @@ export default function FunctionWallet() {
                 </>
               )}
               <div className="fw-actions">
+                <div className="fw-secondary-actions">
+                  <button onClick={() => window.print()}>
+                    Imprimer ce ticket
+                  </button>
+                  <button
+                    onClick={() => {
+                      const copy = createTicket(tool);
+                      update({ ...ticket, id: copy.id, code: copy.code });
+                      setReceived(false);
+                      setStatus(
+                        "Copie créée. Gardez-la pour la retrouver dans votre wallet.",
+                      );
+                    }}
+                  >
+                    Dupliquer le ticket
+                  </button>
+                </div>
                 <button className="fw-primary" onClick={save}>
                   Garder dans mon wallet
                 </button>

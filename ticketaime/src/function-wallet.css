@@ -9,13 +9,13 @@
 .fw-app * {
   box-sizing: border-box;
 }
-.fw-app button,
+.fw-app button:not(.pocket-tab),
 .fw-app input,
 .fw-app textarea,
 .fw-app select {
   font: inherit;
 }
-.fw-app button {
+.fw-app button:not(.pocket-tab) {
   cursor: pointer;
   border: 1px solid var(--line);
   background: transparent;
@@ -23,7 +23,7 @@
   padding: 12px 17px;
   color: inherit;
 }
-.fw-app button:hover {
+.fw-app button:not(.pocket-tab):hover {
   background: #e6e9dc;
 }
 .fw-app button:disabled {
@@ -827,5 +827,77 @@
 @media print {
   .fw-app .lma-nav {
     display: none !important;
+  }
+}
+/* Original archival pockets: keep dark plastic, ring holes and vintage ticket artwork. */
+.fw-pocket-surface {
+  background: #1c1c1f;
+  border-radius: 8px;
+  margin-top: 25px;
+  padding: 20px 8px;
+  color: #f4efe2;
+  min-width: 0;
+}
+.fw-app .functional-pocket-book .workshop-pocket-search {
+  color: #e4ded2;
+  flex-direction: row;
+  align-items: center;
+}
+.fw-app .functional-pocket-book .workshop-pocket-search input {
+  width: min(350px, 100%);
+  background: #f5f3ee;
+  color: #262723;
+}
+.functional-pocket-book [data-pocket-entry] .ticket {
+  pointer-events: none;
+}
+.functional-pocket-book [data-pocket-entry]:focus-visible {
+  outline: 2px solid #d8b26a;
+  outline-offset: 4px;
+}
+.fw-app .functional-pocket-book .fw-ticket {
+  padding: 12px;
+  background: #fffdf5;
+  color: #303828;
+}
+.fw-app .functional-pocket-book .fw-ticket-head {
+  font-size: 8px;
+  color: #646854;
+}
+.fw-app .functional-pocket-book .fw-ticket .fw-business {
+  padding: 10px;
+  box-shadow: none;
+}
+.fw-app .functional-pocket-book .fw-ticket .fw-business h2 {
+  font-size: 16px;
+}
+.fw-app .functional-pocket-book .fw-ticket-code {
+  font-size: 8px;
+}
+.fw-secondary-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.fw-secondary-actions button {
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .fw-pocket-surface {
+    margin-inline: -10px;
+    padding: 15px 0;
+  }
+  .functional-pocket-book .workshop-pocket-search {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+@media print {
+  .fw-secondary-actions,
+  .fw-pocket-surface {
+    display: none !important;
+  }
+  .fw-stage {
+    break-inside: avoid;
   }
 }

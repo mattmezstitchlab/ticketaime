@@ -167,17 +167,17 @@ test("carte postale : timbre, modèle, message, collage, reprise et filtres du w
   await mount();
   await click(button("Mon wallet"));
   await click(button("Mes tickets gardés"));
-  assert.equal(document.querySelectorAll(".fw-saved").length, 1);
-  await click(document.querySelector(".fw-saved"));
+  assert.equal(document.querySelectorAll("[data-pocket-entry]").length, 1);
+  await click(document.querySelector("[data-pocket-entry]"));
   assert.equal(field("Votre mot").value, "Bonjour Élodie !");
   await click(button("← Le wallet"));
   await click(button("Les outils"));
   await fill(field("Catégorie"), "spectacle");
   assert.equal(document.querySelectorAll(".fw-tool").length, 1);
-  assert.equal(document.querySelectorAll(".fw-model").length, 10);
+  assert.equal(document.querySelectorAll("[data-pocket-entry]").length, 10);
   await fill(field("Catégorie"), "timbre");
-  assert.equal(document.querySelectorAll(".fw-model").length, 8);
-  await click(document.querySelector(".fw-model"));
+  assert.equal(document.querySelectorAll("[data-pocket-entry]").length, 8);
+  await click(document.querySelector("[data-pocket-entry]"));
   await click(button("Prendre le timbre et le coller"));
   assert.ok(document.querySelector(".fw-stamp .lma-piece-preview"));
   assert.equal(document.querySelector("canvas"), null);
@@ -229,5 +229,75 @@ test("les scènes photographiques d’origine ouvrent le nouvel atelier, pas le 
   assert.equal(field("Choisir un modèle").value, "opera");
   assert.equal(document.querySelector("canvas"), null);
   assert.equal(document.querySelector(".fw-nav"), null);
+  await act(async () => root.unmount());
+});
+
+test("pochettes originales : 19 catégories, ouverture clavier sans bouton Table et modèles inertes", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  await mount();
+  await click(button("Explorer tous les outils"));
+  const book = document.querySelector(
+    ".original-pocket-book.functional-pocket-book",
+  );
+  assert.ok(book);
+  assert.equal(book.querySelectorAll(".pocket-tab").length, 19);
+  assert.ok(book.textContent.includes("Pochette transparente"));
+  assert.equal(
+    [...book.querySelectorAll("button")].some((el) =>
+      el.textContent.includes("+ Table"),
+    ),
+    false,
+  );
+  await fill(field("Catégorie"), "web");
+  assert.equal(book.querySelectorAll("[data-pocket-entry]").length, 14);
+  assert.ok(book.querySelector("[data-pocket-entry] [inert]"));
+  await fill(field("Catégorie"), "postale");
+  const pocket = book.querySelector("[data-pocket-entry]");
+  assert.equal(pocket.getAttribute("role"), "button");
+  assert.equal(pocket.getAttribute("tabindex"), "0");
+  await act(async () =>
+    pocket.dispatchEvent(
+      new window.KeyboardEvent("keydown", { key: "Enter", bubbles: true }),
+    ),
+  );
+  assert.ok(document.querySelector(".fw-editor"));
+  assert.equal(document.querySelector("canvas"), null);
+  await act(async () => root.unmount());
+});
+
+test("atelier : dupliquer conserve le contenu avec un nouveau code et imprimer appelle le navigateur", async () => {
+  localStorage.clear();
+  window.history.replaceState(null, "", "/");
+  await mount();
+  await fill(document.querySelector("#fw-query"), "réserver pour un mariage");
+  await submit();
+  await click(document.querySelector(".fw-printed"));
+  await fill(field("Votre demande"), "Une réception pour 50 personnes.");
+  await click(button("Garder dans mon wallet"));
+  const original = saved()[0];
+  await click(button("Dupliquer le ticket"));
+  await click(button("Garder dans mon wallet"));
+  assert.equal(saved().length, 2);
+  assert.notEqual(saved()[0].code, original.code);
+  assert.equal(saved()[0].details.message, original.details.message);
+  let prints = 0;
+  window.print = () => {
+    prints++;
+  };
+  await click(button("Imprimer ce ticket"));
+  assert.equal(prints, 1);
+  await click(button("← Le wallet"));
+  await click(button("Mes tickets gardés"));
+  assert.equal(
+    document.querySelectorAll(".original-pocket-book [data-pocket-entry]")
+      .length,
+    2,
+  );
+  assert.ok(
+    document
+      .querySelector(".original-pocket-book")
+      .textContent.includes("2 tickets gardés"),
+  );
   await act(async () => root.unmount());
 });

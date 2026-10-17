@@ -87,3 +87,39 @@ Tests de non-régression : éléments du design d’origine réellement montés,
 fente et scènes présents, absence du hero alternatif, et ouverture d’un ticket
 Opéra depuis sa scène vers l’atelier individuel. Recette visuelle en navigateur
 réel toujours à effectuer ; les contrôles DOM ne valident pas les pixels.
+
+## Pochettes d’origine — collection et tickets gardés
+
+Le wallet fonctionnel réutilise désormais `WalletView`, le classeur transparent
+sombre existant, au lieu d’une grille de cartes génériques. Le mode fonctionnel
+expose les 19 catégories et les 168 modèles ; le mode historique garde ses filtres
+et ses callbacks. Les tickets gardés occupent les mêmes pochettes, avec leurs
+textes et leur identité propre. Les onglets annoncent leur état actif, chaque
+pochette s’ouvre aussi avec Entrée ou Espace, et les modèles web sont inertes.
+Le bouton « + Table » n’est pas monté lorsqu’aucun callback canevas n’est fourni.
+L’atelier individuel propose une duplication (nouvel ID/code, sauvegarde explicite)
+et une impression navigateur isolée sur le ticket. Pas de retour du canevas.
+
+## Suite serveur — point d’arrêt explicite
+
+Inspection du projet : aucune variable d’environnement configurée. Un stockage
+Neon existe dans l’équipe, mais il est relié à une autre application : aucune
+connexion, réutilisation ou modification de cette ressource n’a été effectuée.
+
+Pour poursuivre les codes inter-appareils et la réception des demandes, prévoir
+une base dédiée à Ticketaime, une identité propriétaire et des autorisations :
+- Création/modification des tickets réservée à leur propriétaire authentifié.
+- Code de lecture aléatoire côté serveur, stocké sous forme d’empreinte ; expiration,
+  révocation et limitation du nombre de tentatives. Aucun numéro séquentiel public.
+- Données privées séparées de la copie partagée ; le code donne accès uniquement
+  aux champs explicitement publiés, jamais à tout le wallet.
+- Réception de demande distincte d’une réservation confirmée ; confirmation explicite
+  du prestataire, statut persistant et journal d’événements idempotents.
+- Compte/synchronisation, export/suppression et limites de conservation à définir
+  avant collecte de données réelles. Envoi email via un service dédié, avec domaine
+  expéditeur vérifié et gestion des échecs ; jamais déduit du clic sur « envoyer ».
+
+Cette étape n’est pas activée : pas de fausse API publique, de stockage en mémoire
+présenté comme durable, de secret dans le client ou de promesse d’envoi serveur.
+La mise en place d’une base dédiée doit être approuvée avant provisionnement ;
+aucun coût de service ni mutation d’infrastructure n’a été engagé ici.

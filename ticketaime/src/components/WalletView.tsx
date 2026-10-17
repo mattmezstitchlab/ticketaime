@@ -1,8 +1,26 @@
-import { useState } from "react";
+import { useState, type ReactNode, type ComponentType } from "react";
 import Ticket from "./Ticket";
-import { CATEGORIES, ITEMS, ITEM_INDEX, type CategoryId, type Item } from "../data/catalogue";
+import {
+  CATEGORIES,
+  ITEMS,
+  ITEM_INDEX,
+  type CategoryId,
+  type Item,
+} from "../data/catalogue";
+
+export interface PocketEntry {
+  id: string;
+  item: Item;
+  fields?: Record<string, string>;
+  label?: string;
+}
 
 interface WalletViewProps {
+  functional?: boolean;
+  renderEntry?: (entry: PocketEntry) => ReactNode;
+  entries?: PocketEntry[];
+  onOpenEntry?: (entry: PocketEntry) => void;
+  onSelectFunction?: (item: Item) => string;
   searchQuery?: string;
   onSearchQuery?: (query: string) => void;
   selectedCategory?: CategoryId | "tout";
@@ -13,6 +31,11 @@ interface WalletViewProps {
 }
 
 export default function WalletView({
+  functional = false,
+  renderEntry,
+  entries,
+  onOpenEntry,
+  onSelectFunction,
   searchQuery = "",
   onSearchQuery,
   selectedCategory = "tout",
@@ -22,34 +45,74 @@ export default function WalletView({
   onDropOnCanvas,
 }: WalletViewProps) {
   const [activeCat, setActiveCat] = useState<CategoryId>(
-    selectedCategory === "tout" || ["monnaies", "billets", "sceaux"].includes(selectedCategory) ? "voyage" : selectedCategory,
+    selectedCategory === "tout" ||
+      (!functional &&
+        ["monnaies", "billets", "sceaux"].includes(selectedCategory))
+      ? "voyage"
+      : selectedCategory,
   );
 
-  const visibleCategories = CATEGORIES.filter(category => !["monnaies", "billets", "sceaux"].includes(category.id));
-  const currentCat = CATEGORIES.find((c) => c.id === activeCat) ?? CATEGORIES[0];
-  const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  const catItems = ITEMS.filter((it) => !["web-login", "web-newsletter", "web-buttons"].includes(it.id) && it.category === activeCat && normalize(it.name).includes(normalize(searchQuery.trim())));
+  const category =
+    selectedCategory !== "tout" && functional ? selectedCategory : activeCat;
+  const visibleCategories = CATEGORIES.filter(
+    (category) =>
+      functional || !["monnaies", "billets", "sceaux"].includes(category.id),
+  );
+  const currentCat = CATEGORIES.find((c) => c.id === category) ?? CATEGORIES[0];
+  const normalize = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  const catItems = ITEMS.filter(
+    (it) =>
+      (functional ||
+        !["web-login", "web-newsletter", "web-buttons"].includes(it.id)) &&
+      it.category === category &&
+      normalize(it.name).includes(normalize(searchQuery.trim())),
+  );
 
+  const pocketEntries: PocketEntry[] = entries
+    ? entries.filter(
+        (entry) =>
+          entry.item.category === category &&
+          normalize(entry.label || entry.item.name).includes(
+            normalize(searchQuery.trim()),
+          ),
+      )
+    : catItems.map((item) => ({ id: item.id, item }));
   const handleTabChange = (catId: CategoryId) => {
     setActiveCat(catId);
     onSelectCategory?.(catId);
   };
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto select-none my-6">
-      <label className="workshop-pocket-search">Rechercher un ticket
-        <input type="search" value={searchQuery} onChange={event => onSearchQuery?.(event.target.value)} placeholder="Nom d’un ticket…" />
+    <div
+      className={`original-pocket-book w-full max-w-[1400px] mx-auto select-none my-6 ${functional ? "functional-pocket-book" : ""}`}
+    >
+      <label className="workshop-pocket-search">
+        Rechercher un ticket
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(event) => onSearchQuery?.(event.target.value)}
+          placeholder="Nom d’un ticket…"
+        />
       </label>
       {/* ---------------- Category Binder Tabs ---------------- */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] px-4">
+      <div
+        aria-label="Catégories de tickets"
+        className="flex items-center gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] px-4"
+      >
         {visibleCategories.map((c) => {
-          const isActive = c.id === activeCat;
+          const isActive = c.id === category;
           return (
             <button
               key={c.id}
               type="button"
               onClick={() => handleTabChange(c.id)}
-              className={`flex-none flex items-center gap-2 px-3.5 py-2 rounded-t-md border-t border-x font-type text-xs uppercase tracking-wider transition-all ${
+              aria-pressed={isActive}
+              className={`pocket-tab flex-none flex items-center gap-2 px-3.5 py-2 rounded-t-md border-t border-x font-type text-xs uppercase tracking-wider transition-all ${
                 isActive
                   ? "bg-[#1f2026] text-white border-white/25 shadow-lg font-bold -mb-px z-10"
                   : "bg-[#15161a]/80 text-white/50 border-white/10 hover:text-white/80 hover:bg-[#191a20]"
@@ -67,7 +130,12 @@ export default function WalletView({
                 {c.numeral}. {c.name}
               </span>
               <span className="text-[10px] font-mono opacity-50">
-                ({ITEMS.filter((it) => it.category === c.id).length})
+                (
+                {entries
+                  ? entries.filter((entry) => entry.item.category === c.id)
+                      .length
+                  : ITEMS.filter((it) => it.category === c.id).length}
+                )
               </span>
             </button>
           );
@@ -102,7 +170,11 @@ export default function WalletView({
           <div className="absolute right-1 top-0 bottom-0 w-px bg-white/20" />
         </div>
 
-        {catItems.length === 0 && <p className="text-white/70 pl-12 text-sm" role="status">Aucun ticket dans cette catégorie pour cette recherche.</p>}
+        {pocketEntries.length === 0 && (
+          <p className="text-white/70 pl-12 text-sm" role="status">
+            Aucun ticket dans cette catégorie pour cette recherche.
+          </p>
+        )}
         {/* Plastic Gloss & Diagonal Highlight Sheen (Reflet de film plastique transparent) */}
         <div
           className="absolute inset-0 pointer-events-none z-10 opacity-30"
@@ -128,7 +200,8 @@ export default function WalletView({
                 {currentCat.name}
               </h3>
               <p className="font-type text-xs text-white/50 tracking-wider m-0">
-                {currentCat.tagline} · {catItems.length} pièces archivées
+                {currentCat.tagline} · {pocketEntries.length}{" "}
+                {entries ? "tickets gardés" : "pièces archivées"}
               </p>
             </div>
           </div>
@@ -145,16 +218,35 @@ export default function WalletView({
 
         {/* ---------------- The Transparent Compartments Grid ---------------- */}
         <div className="pl-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative">
-          {catItems.map((item, index) => {
+          {pocketEntries.map((entry, index) => {
+            const item = entry.item;
+            const Component = item.Component as ComponentType<{
+              personnalisation?: Record<string, string>;
+            }>;
+            const open = () =>
+              entries ? onOpenEntry?.(entry) : onSelectItem(item);
             const isSelected = selectedItemId === item.id;
             const n = ITEM_INDEX[item.id] ?? index + 1;
             return (
               <div
-                key={item.id}
+                key={entry.id}
+                data-pocket-entry={entry.id}
                 data-atlas-module={item.id}
                 data-atlas-category={item.category}
                 data-atlas-version="1.0.0"
-                onClick={() => onSelectItem(item)}
+                onClick={open}
+                role="button"
+                tabIndex={0}
+                aria-label={`${entries ? "Ouvrir" : "Personnaliser"} ${entry.label || item.name}`}
+                onKeyDown={(event) => {
+                  if (
+                    event.target === event.currentTarget &&
+                    ["Enter", " "].includes(event.key)
+                  ) {
+                    event.preventDefault();
+                    open();
+                  }
+                }}
                 className={`group/slot relative rounded-lg border transition-all cursor-pointer flex flex-col justify-between overflow-hidden ${
                   isSelected
                     ? "border-amber-400 bg-amber-400/10 shadow-[0_0_24px_rgba(245,158,11,0.25)] ring-2 ring-amber-400/40"
@@ -188,48 +280,61 @@ export default function WalletView({
                   >
                     #{String(n).padStart(2, "0")}
                   </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDropOnCanvas?.(item);
-                    }}
-                    title="Déposer cette pièce sur le canevas libre"
-                    className="opacity-0 group-hover/slot:opacity-100 transition-opacity bg-amber-500 hover:bg-amber-400 text-stone-900 font-type px-2 py-0.5 rounded text-[10px] font-bold"
-                  >
-                    + Table
-                  </button>
+                  {onDropOnCanvas && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDropOnCanvas?.(item);
+                      }}
+                      title="Déposer cette pièce sur le canevas libre"
+                      className="opacity-0 group-hover/slot:opacity-100 transition-opacity bg-amber-500 hover:bg-amber-400 text-stone-900 font-type px-2 py-0.5 rounded text-[10px] font-bold"
+                    >
+                      + Table
+                    </button>
+                  )}
                 </div>
 
                 {/* Scaled Ticket Inside Transparent Pocket */}
-                <div className="flex-1 flex items-center justify-center p-4 py-2">
+                <div
+                  className="flex-1 flex items-center justify-center p-4 py-2"
+                  inert={functional || undefined}
+                >
                   <div
                     className="w-full transition-transform duration-300 group-hover/slot:scale-105"
                     style={{
+                      width: functional
+                        ? Math.min(240, (150 * item.w) / item.h)
+                        : undefined,
                       maxHeight: "160px",
                       filter: `drop-shadow(0 8px 16px rgba(0,0,0,0.6))`,
                     }}
                   >
-                    <Ticket
-                      w={item.w}
-                      h={item.h}
-                      rotate={item.rotate * 0.4}
-                      label={item.name}
-                      caption={false}
-                      className="w-full"
-                    >
-                      <item.Component />
-                    </Ticket>
+                    {renderEntry ? (
+                      renderEntry(entry)
+                    ) : (
+                      <Ticket
+                        w={item.w}
+                        h={item.h}
+                        rotate={item.rotate * 0.4}
+                        label={item.name}
+                        caption={false}
+                        disableReveal={functional}
+                        className="w-full"
+                      >
+                        <Component personnalisation={entry.fields} />
+                      </Ticket>
+                    )}
                   </div>
                 </div>
 
                 {/* Bottom compartment label */}
                 <div className="p-3 pt-1 border-t border-white/10 bg-black/30 z-10">
                   <p className="font-cond font-semibold text-xs text-white/90 truncate m-0">
-                    {item.name}
+                    {entry.label || item.name}
                   </p>
                   <p className="font-type text-[9.5px] text-white/40 truncate m-0 uppercase tracking-wider">
-                    {currentCat.name}
+                    {onSelectFunction?.(item) || currentCat.name}
                   </p>
                 </div>
               </div>
