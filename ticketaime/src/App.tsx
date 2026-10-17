@@ -1,7 +1,7 @@
 import ProfessionalJourney from "./components/ProfessionalJourney";
 import PieceGuide from "./components/PieceGuide";
 import ModuleView from "./components/ModuleView";
-import SimpleTickets from "./components/SimpleTickets";
+import Meetings from "./components/Meetings";
 import { moduleIdFromLocation } from "./lib/atlas";
 
 export default function App() {
@@ -10,5 +10,5 @@ export default function App() {
   if (page === "guide") return <PieceGuide />;
   const module = moduleIdFromLocation();
   if (module) return <ModuleView moduleId={module} />;
-  return <SimpleTickets />;
+  return <Meetings />;
 }
