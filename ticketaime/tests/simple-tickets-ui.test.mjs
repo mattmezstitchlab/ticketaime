@@ -78,125 +78,87 @@ const fill = async (element, value) => {
   });
 };
 
-const key = "ticketaime-simple-creations-v1";
+const key = "ticketaime-signature-stamps-v1";
 const saved = () => JSON.parse(localStorage.getItem(key) || "[]");
-const pointer = async (el, type, x, y) => {
-  const event = new window.MouseEvent(type, {
-    bubbles: true,
-    button: 0,
-    clientX: x,
-    clientY: y,
-  });
-  await act(async () => el.dispatchEvent(event));
-};
-test("accueil minimal : grand titre, huit tickets, ni vidéo ni code ni wallet", async () => {
+test("un seul timbre de marque, fente centrale, ni catalogue ni vidéo ni code", async () => {
   localStorage.clear();
   await mount();
-  assert.equal(document.querySelector("h1").textContent, "LE MONDEAIME.");
-  assert.equal(document.querySelectorAll(".st-floating").length, 8);
-  assert.equal(document.querySelector("video"), null);
-  assert.equal(document.querySelector("input"), null);
-  assert.equal(document.querySelector(".fw-wallet"), null);
-  assert.ok(document.querySelector(".st-slot"));
-  await act(async () => root.unmount());
-});
-test("glisser déplace sans ouvrir ; clic et clavier ouvrent en plein écran", async () => {
-  await mount();
-  const ticket = document.querySelector(".st-floating");
-  ticket.parentElement.getBoundingClientRect = () => ({
-    width: 1000,
-    height: 800,
-  });
-  await pointer(ticket, "pointerdown", 10, 20);
-  await pointer(ticket, "pointermove", 80, 100);
-  await pointer(ticket, "pointerup", 80, 100);
-  await click(ticket);
-  assert.equal(document.querySelector('[role="dialog"]'), null);
-  assert.ok(ticket.style.transform.includes("70px, 80px"));
-  await click(ticket);
-  assert.ok(document.querySelector('[role="dialog"][aria-modal="true"]'));
-  assert.equal(document.body.style.overflow, "hidden");
-  await click(button("Fermer sans enregistrer"));
-  assert.equal(document.querySelector('[role="dialog"]'), null);
-  await act(async () =>
-    ticket.dispatchEvent(
-      new window.KeyboardEvent("keydown", { key: "Enter", bubbles: true }),
-    ),
-  );
-  assert.ok(document.querySelector('[role="dialog"]'));
-  await act(async () => root.unmount());
-});
-test("éditer, valider, timbre, rouvrir, mise à jour sans doublon et reprise", async () => {
-  localStorage.clear();
-  await mount();
-  await click(document.querySelector(".st-floating"));
-  const input = document.querySelector(".st-fields input");
-  if (input) await fill(input, "MON ÉVÉNEMENT");
-  await fill(field("Votre mot"), "Bonjour Élodie !");
-  await click(button("Valider"));
-  assert.equal(document.querySelector('[role="dialog"]'), null);
-  assert.equal(saved().length, 1);
-  assert.equal(saved()[0].note, "Bonjour Élodie !");
-  assert.ok(document.querySelector(".st-stamp"));
+  assert.equal(document.querySelectorAll(".signature-trigger").length, 1);
+  assert.ok(document.querySelector("h1").textContent.includes("LE MONDE"));
   assert.ok(
     document
-      .querySelector('[role="status"]')
-      .textContent.includes("enregistrée"),
+      .querySelector(".signature-trigger strong")
+      .textContent.includes("AIME"),
   );
-  await click(document.querySelector(".st-stamp"));
-  assert.equal(field("Votre mot").value, "Bonjour Élodie !");
-  await fill(field("Votre mot"), "Une nouvelle version");
+  assert.ok(document.querySelector(".signature-slot"));
+  assert.equal(document.querySelector("video,input,select,.st-grid"), null);
+  assert.equal(button("Tous les tickets"), undefined);
+  await act(async () => root.unmount());
+});
+test("édition plein écran, aperçu, validation, sortie du timbre et reprise sans doublon", async () => {
+  localStorage.clear();
+  await mount();
+  await click(document.querySelector(".signature-trigger"));
+  assert.ok(document.querySelector('[role="dialog"][aria-modal="true"]'));
+  await fill(field("Pour qui ?"), "Élodie");
+  await fill(field("Votre mot"), "Une belle attention.");
+  await fill(field("Votre signature"), "Camille");
+  assert.ok(
+    document
+      .querySelector(".signature-preview")
+      .textContent.includes("Pour Élodie"),
+  );
+  await click(button("Valider"));
+  assert.equal(saved().length, 1);
+  assert.equal(saved()[0].message, "Une belle attention.");
+  assert.equal(document.querySelector('[role="dialog"]'), null);
+  assert.ok(document.querySelector(".signature-trigger.is-issued"));
+  await click(document.querySelector(".signature-trigger"));
+  assert.equal(field("Votre mot").value, "Une belle attention.");
+  await fill(field("Votre mot"), "Une deuxième version");
   await click(button("Valider"));
   assert.equal(saved().length, 1);
   await act(async () => root.unmount());
   await mount();
-  await click(document.querySelector(".st-saved-list button"));
-  assert.equal(field("Votre mot").value, "Une nouvelle version");
+  await click(document.querySelector(".signature-collection button"));
+  assert.equal(field("Votre mot").value, "Une deuxième version");
   await act(async () => root.unmount());
 });
-test("annulation et échec de sauvegarde ne font pas sortir de timbre", async () => {
+test("annulation, stockage plein et nouvelle attention indépendante", async () => {
   localStorage.clear();
   await mount();
-  await click(document.querySelector(".st-floating"));
-  await fill(field("Votre mot"), "Ne pas garder");
+  await click(document.querySelector(".signature-trigger"));
+  await fill(field("Votre mot"), "Annuler");
   await click(button("Fermer sans enregistrer"));
   assert.equal(saved().length, 0);
-  assert.equal(document.querySelector(".st-stamp"), null);
-  await click(document.querySelector(".st-floating"));
+  assert.equal(document.querySelector(".is-issued"), null);
+  await click(document.querySelector(".signature-trigger"));
   const original = window.Storage.prototype.setItem;
   window.Storage.prototype.setItem = () => {
     throw new Error("quota");
   };
   await click(button("Valider"));
-  assert.ok(
-    document.querySelector('[role="alert"]').textContent.includes("impossible"),
-  );
+  assert.ok(document.querySelector('[role="alert"]'));
   assert.ok(document.querySelector('[role="dialog"]'));
-  assert.equal(document.querySelector(".st-stamp"), null);
+  assert.equal(document.querySelector(".is-issued"), null);
   window.Storage.prototype.setItem = original;
+  await click(button("Valider"));
+  await click(button("Créer une autre attention"));
+  assert.equal(field("Votre mot").value, "");
+  await click(button("Valider"));
+  assert.equal(saved().length, 2);
+  assert.notEqual(saved()[0].id, saved()[1].id);
   await act(async () => root.unmount());
 });
-test("catalogue : tous les modèles, filtre et modèles web inertes", async () => {
-  await mount();
-  await click(button("Tous les tickets"));
-  assert.equal(document.querySelectorAll(".st-model").length, 168);
-  await fill(field("Catégorie"), "web");
-  assert.equal(document.querySelectorAll(".st-model").length, 14);
-  assert.ok(document.querySelector(".st-model [inert]"));
-  await click(document.querySelector(".st-model"));
-  assert.ok(document.querySelector('[role="dialog"]'));
-  await act(async () => root.unmount());
-});
-
-test("éditeur : focus contenu, Échap annule et restitue le focus", async () => {
+test("dialogue accessible : focus, boucle clavier, Échap et retour", async () => {
   localStorage.clear();
   await mount();
-  const ticket = document.querySelector(".st-floating");
-  ticket.focus();
-  await click(ticket);
+  const trigger = document.querySelector(".signature-trigger");
+  trigger.focus();
+  await click(trigger);
   const dialog = document.querySelector('[role="dialog"]');
   const controls = [...dialog.querySelectorAll("button,input,textarea")];
-  assert.equal(document.activeElement.id, "st-editor-title");
+  assert.equal(document.activeElement.id, "signature-title");
   await act(async () =>
     dialog.dispatchEvent(
       new window.KeyboardEvent("keydown", {
@@ -224,7 +186,19 @@ test("éditeur : focus contenu, Échap annule et restitue le focus", async () =>
     ),
   );
   assert.equal(document.querySelector('[role="dialog"]'), null);
-  assert.equal(document.activeElement, ticket);
-  assert.equal(document.body.style.overflow, "");
+  assert.equal(document.activeElement, trigger);
   await act(async () => root.unmount());
+});
+test("stockage corrompu : accueil disponible et anciens brouillons non effacés", async () => {
+  localStorage.setItem(key, "invalid");
+  localStorage.setItem("ticketaime-simple-creations-v1", "legacy");
+  await mount();
+  assert.ok(document.querySelector(".signature-trigger"));
+  assert.equal(document.querySelector(".signature-saved"), null);
+  assert.equal(
+    localStorage.getItem("ticketaime-simple-creations-v1"),
+    "legacy",
+  );
+  await act(async () => root.unmount());
+  localStorage.clear();
 });

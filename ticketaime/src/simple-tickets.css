@@ -1,433 +1,353 @@
-.st-app {
-  background: #fff;
-  color: #262723;
+.signature-app {
   min-height: 100svh;
+  background: #fff;
+  color: #292c25;
   font-family:
     -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif;
 }
-.st-app * {
+.signature-app * {
   box-sizing: border-box;
 }
-.st-app button,
-.st-app input,
-.st-app textarea,
-.st-app select {
+.signature-app button,
+.signature-app input,
+.signature-app textarea {
   font: inherit;
 }
-.st-app button {
+.signature-app button {
   cursor: pointer;
-  background: transparent;
-  border: 1px solid #26272330;
-  border-radius: 4px;
-  padding: 10px 14px;
   color: inherit;
 }
-.st-app :is(button, input, select, textarea, [role="button"]):focus-visible {
+.signature-app :is(button, input, textarea):focus-visible {
   outline: 2px solid #647966;
-  outline-offset: 5px;
+  outline-offset: 6px;
 }
-.st-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 35px;
-  gap: 25px;
-}
-.st-top > span {
-  font-size: 9px;
-  letter-spacing: 0.16em;
-}
-.st-top button {
-  font-size: 11px;
-}
-.st-dispenser {
+.signature-hero {
   position: relative;
-  width: 170px;
-  height: 30px;
-  margin: 0 auto;
-  z-index: 5;
-}
-.st-slot {
-  height: 7px;
-  background: #292c26;
-  border-radius: 8px;
-  box-shadow: 0 2px 0 #d4d4cd;
-}
-.st-stamp {
-  position: absolute;
-  top: 4px;
-  left: 40px;
-  width: 90px;
-  border: 0 !important;
-  padding: 0 !important;
-  animation: st-feed 0.8s both;
-  filter: drop-shadow(0 6px 5px #0002);
-}
-.st-stamp span {
-  display: block;
-  background: #fff;
-  font-size: 8px;
-  padding: 4px;
-}
-.st-hero {
-  position: relative;
-  min-height: 760px;
-  height: calc(100svh - 110px);
-  max-height: 1100px;
-  overflow: hidden;
-  isolation: isolate;
-}
-.st-hero h1 {
-  position: absolute;
-  inset: 0;
+  min-height: 850px;
+  height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  font-size: clamp(85px, 14vw, 230px);
+  justify-content: center;
+  isolation: isolate;
+  padding: 45px 20px 30px;
+}
+.signature-intro {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  position: absolute;
+  top: 30px;
+}
+.signature-hero h1 {
+  font-size: clamp(80px, 15vw, 235px);
   font-weight: 750;
-  letter-spacing: -0.085em;
   line-height: 0.85;
+  letter-spacing: -0.085em;
   text-align: center;
   margin: 0;
-  padding-bottom: 60px;
-  pointer-events: none;
+  position: absolute;
+  top: 18%;
+  left: 0;
+  right: 0;
+  z-index: -1;
 }
-.st-hero h1 span {
+.signature-hero h1 > span {
   color: #8c6750;
-  display: none;
 }
-.st-hero > p {
-  position: absolute;
-  bottom: 25px;
-  left: 20px;
-  right: 20px;
-  text-align: center;
-  font-size: 11px;
-  color: #777e70;
-  pointer-events: none;
+.signature-dispenser {
+  width: min(410px, 80vw);
+  margin-top: 180px;
+  position: relative;
 }
-.st-floating {
-  position: absolute;
-  z-index: 2;
-  width: clamp(150px, 20vw, 290px);
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
-  filter: drop-shadow(0 12px 12px #30291623);
+.signature-slot {
+  height: 9px;
+  background: #262b23;
+  border-radius: 12px;
+  box-shadow: 0 2px 0 #dadcd3;
+  position: relative;
+  z-index: 3;
 }
-.st-floating:active {
-  cursor: grabbing;
-  z-index: 10;
+.signature-output {
+  overflow: hidden;
+  padding: 0 30px 18px;
 }
-.st-floating > div {
-  pointer-events: none;
-}
-.st-floating-0 {
-  left: 5%;
-  top: 10%;
-}
-.st-floating-1 {
-  right: 3%;
-  top: 11%;
-}
-.st-floating-2 {
-  left: 36%;
-  top: 3%;
-  width: 210px;
-}
-.st-floating-3 {
-  left: 12%;
-  top: 65%;
-}
-.st-floating-4 {
-  right: 8%;
-  top: 64%;
-}
-.st-floating-5 {
-  right: 29%;
-  top: 38%;
-  width: 100px;
-}
-.st-floating-6 {
-  left: 2%;
-  top: 37%;
-  width: 145px;
-}
-.st-floating-7 {
-  left: 44%;
-  top: 72%;
-  width: 200px;
-}
-.st-app .lma-piece-preview {
+.signature-trigger {
+  display: block;
   width: 100%;
-  pointer-events: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  transform: translateY(-20px);
+  filter: drop-shadow(0 12px 12px #3029161c);
 }
-.st-app .ticket .ticket-inner {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
+.signature-trigger.is-issued {
+  animation: signature-feed 1s ease-out both;
 }
-.st-editor {
+.signature-stamp {
+  background: #eee9da;
+  color: #414b38;
+  padding: 15px;
+  mask: radial-gradient(
+      circle at 6px 6px,
+      transparent 4px,
+      #000 4.5px
+    ) -6px -6px/12px
+    12px;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.signature-stamp-border {
+  border: 1px solid #647052;
+  padding: 22px 18px 14px;
+}
+.signature-edition {
+  font: 8px/1.5 var(--font-mono-vintage, monospace);
+  letter-spacing: 0.1em;
+}
+.signature-stamp strong {
+  display: block;
+  font-size: clamp(26px, 4vw, 58px);
+  font-weight: 750;
+  letter-spacing: -0.07em;
+  line-height: 0.9;
+  margin: 23px 0 12px;
+}
+.signature-stamp strong > span {
+  color: #937054;
+}
+.signature-symbol {
+  font-size: 48px;
+  line-height: 1.3;
+  color: #8c6750;
+}
+.signature-stamp p {
+  font: 14px/1.6 var(--font-mono-vintage, monospace);
+  white-space: pre-wrap;
+  margin: 14px 0 20px;
+}
+.signature-address {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #90998088;
+  padding-top: 14px;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+.signature-foot {
+  display: block;
+  font: 7px/1.5 var(--font-mono-vintage, monospace);
+  letter-spacing: 0.09em;
+  margin-top: 20px;
+}
+.signature-instruction {
+  font-size: 11px;
+  text-align: center;
+  color: #707869;
+  margin: 0 0 14px;
+}
+.signature-new {
+  font-size: 11px !important;
+  border: 0;
+  border-bottom: 1px solid #cbd0c3;
+  background: none;
+  padding: 8px;
+}
+.signature-notice {
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  color: #64705a;
+}
+.signature-saved {
+  max-width: 1100px;
+  margin: auto;
+  padding: 55px 30px;
+  border-top: 1px solid #ddd;
+}
+.signature-saved h2 {
+  font-size: 32px;
+  letter-spacing: -0.04em;
+  font-weight: 450;
+}
+.signature-saved > p {
+  font-size: 11px;
+  color: #737c69;
+}
+.signature-collection {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 35px;
+  margin-top: 35px;
+}
+.signature-collection > button {
+  padding: 0;
+  border: 0;
+  background: none;
+  align-self: start;
+  filter: drop-shadow(0 8px 8px #30291612);
+}
+.signature-collection .signature-stamp strong {
+  font-size: 35px;
+}
+.signature-app footer {
+  text-align: center;
+  padding: 30px;
+  font-size: 10px;
+  line-height: 1.8;
+  color: #818777;
+}
+.signature-editor {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  overflow: auto;
   background: #fff;
-  color: #262723;
+  overflow: auto;
 }
-.st-editor > header {
-  position: sticky;
-  top: 0;
-  z-index: 3;
+.signature-editor > header {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 15px;
   padding: 20px 30px;
-  background: #ffffffed;
   border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  background: #fffffff0;
+  z-index: 2;
 }
-.st-editor > header button {
+.signature-editor > header button {
   font-size: 12px;
+  background: none;
+  border: 1px solid #ccc;
+  padding: 11px 16px;
+  border-radius: 4px;
 }
-.st-app .st-validate {
-  background: #30392b;
+.signature-editor > header .signature-validate {
+  background: #414b38;
   color: #fff;
-  border-color: #30392b;
-  padding-inline: 28px;
+  border-color: #414b38;
+  padding-inline: 30px;
 }
-.st-editor-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
-  gap: 65px;
-  max-width: 1300px;
+.signature-editor-body {
+  max-width: 1200px;
   margin: auto;
   padding: 65px 35px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(270px, 1fr);
+  gap: 80px;
+  align-items: start;
 }
-.st-preview {
-  align-self: center;
-  min-width: 0;
+.signature-preview {
+  width: min(100%, 510px);
+  filter: drop-shadow(0 12px 20px #30291619);
+  justify-self: center;
 }
-.st-preview > .st-handwritten {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  font: 24px/1.6 var(--font-script, cursive);
-  padding: 30px 10px;
-  color: #304d65;
+.signature-preview .signature-stamp strong {
+  font-size: 70px;
 }
-.st-fields {
+.signature-preview .signature-stamp p {
+  font-size: 18px;
+}
+.signature-fields {
   display: flex;
   flex-direction: column;
   gap: 22px;
 }
-.st-fields h2 {
-  font-size: 30px;
+.signature-fields h2 {
+  font-size: 42px;
   font-weight: 450;
-  letter-spacing: -0.04em;
+  line-height: 1.05;
+  letter-spacing: -0.05em;
   margin: 0;
 }
-.st-fields h2:focus {
+.signature-fields h2:focus {
   outline: none;
 }
-.st-fields p {
+.signature-fields p {
   font-size: 12px;
   line-height: 1.7;
-  color: #6e7565;
+  color: #707a65;
   margin: 0;
 }
-.st-fields label,
-.st-filters label {
+.signature-fields label {
   display: flex;
   flex-direction: column;
   gap: 9px;
   font-size: 12px;
 }
-.st-app input,
-.st-app textarea,
-.st-app select {
-  background: #fff;
-  color: #262723;
-  border: 1px solid #cccec5;
-  border-radius: 4px;
-  padding: 12px;
+.signature-fields input,
+.signature-fields textarea {
   width: 100%;
   min-width: 0;
+  background: white;
+  color: #292c25;
+  border: 1px solid #cbd0c3;
+  border-radius: 4px;
+  padding: 12px;
 }
-.st-app textarea {
+.signature-fields textarea {
   resize: vertical;
 }
-.st-catalogue,
-.st-saved {
-  max-width: 1250px;
-  margin: auto;
-  padding: 50px 35px;
+.signature-fields [role="alert"] {
+  color: #a14639;
 }
-.st-catalogue h1 {
-  font-size: 55px;
-  font-weight: 450;
-  letter-spacing: -0.05em;
-}
-.st-filters {
-  display: flex;
-  gap: 25px;
-}
-.st-filters label {
-  flex: 1;
-}
-.st-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 40px;
-  margin-top: 45px;
-}
-.st-model {
-  cursor: pointer;
-  min-width: 0;
-}
-.st-model-art {
-  height: 240px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  filter: drop-shadow(0 8px 8px #30291616);
-}
-.st-model-art > div {
-  max-width: 100%;
-}
-.st-model > span {
-  font-size: 11px;
-  display: block;
-  margin-top: 15px;
-}
-.st-saved {
-  border-top: 1px solid #ddd;
-}
-.st-saved h2 {
-  font-size: 25px;
-  font-weight: 450;
-}
-.st-saved p,
-.st-notice {
-  font-size: 12px;
-  color: #65725c;
-  line-height: 1.6;
-}
-.st-notice {
-  text-align: center;
-  padding: 20px;
-}
-.st-saved-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 20px;
-}
-.st-saved-list button {
-  font-size: 11px;
-}
-.st-footer {
-  text-align: center;
-  padding: 30px;
-  font-size: 10px;
-  color: #7c8175;
-}
-@keyframes st-feed {
+@keyframes signature-feed {
   from {
-    transform: translateY(-80px);
-    opacity: 0;
+    transform: translateY(-100%);
   }
   to {
-    transform: translateY(0);
-    opacity: 1;
+    transform: translateY(-20px);
   }
 }
 @media (max-width: 750px) {
-  .st-top {
-    padding: 20px;
-  }
-  .st-top > span {
-    max-width: 150px;
-    font-size: 8px;
-  }
-  .st-hero {
+  .signature-hero {
     min-height: 750px;
-    height: calc(100svh - 100px);
   }
-  .st-hero h1 {
+  .signature-hero h1 {
     font-size: 18vw;
+    top: 19%;
   }
-  .st-floating {
-    width: 150px;
+  .signature-dispenser {
+    margin-top: 150px;
+    width: min(360px, 88vw);
   }
-  .st-floating-0 {
-    left: 2%;
-    top: 13%;
+  .signature-output {
+    padding-inline: 22px;
   }
-  .st-floating-1 {
-    right: 1%;
-    top: 22%;
-  }
-  .st-floating-2 {
-    left: 40%;
-    top: 2%;
-    width: 140px;
-  }
-  .st-floating-3 {
-    left: 2%;
-    top: 66%;
-  }
-  .st-floating-4 {
-    right: 1%;
-    top: 78%;
-  }
-  .st-floating-5 {
-    right: 1%;
-    top: 48%;
-    width: 70px;
-  }
-  .st-floating-6 {
-    left: 1%;
-    top: 37%;
-    width: 95px;
-  }
-  .st-floating-7 {
-    left: 30%;
-    top: 60%;
-    width: 140px;
-  }
-  .st-editor-body {
-    grid-template-columns: 1fr;
-    padding: 35px 22px;
-    gap: 35px;
-  }
-  .st-editor > header {
-    padding: 16px;
-  }
-  .st-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 30px 20px;
-  }
-  .st-model-art {
-    height: 190px;
-  }
-  .st-filters {
-    flex-direction: column;
-  }
-  .st-catalogue {
-    padding: 30px 22px;
-  }
-  .st-catalogue h1 {
+  .signature-stamp strong {
     font-size: 42px;
   }
-}
-@media (max-width: 440px) {
-  .st-grid {
+  .signature-editor-body {
     grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 35px 24px;
+  }
+  .signature-preview {
+    max-width: 380px;
+  }
+  .signature-preview .signature-stamp strong {
+    font-size: 56px;
+  }
+  .signature-editor > header {
+    padding: 16px;
+  }
+  .signature-collection {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .signature-collection .signature-stamp strong {
+    font-size: 27px;
+  }
+}
+@media (max-width: 480px) {
+  .signature-collection {
+    grid-template-columns: 1fr;
+  }
+  .signature-saved {
+    padding-inline: 35px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .st-stamp {
+  .signature-trigger.is-issued {
     animation: none;
   }
 }

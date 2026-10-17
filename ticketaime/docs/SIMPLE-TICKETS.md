@@ -25,3 +25,17 @@ ni supprimées ni migrées. Les URL guide/professionnels/Atlas restent disponibl
 Contrôles : TypeScript, suite Node/DOM et build. Recette visuelle/mobile et drag
 natif à effectuer sur la preview ; tests DOM ne valident pas les pixels, la
 lisibilité du collage ou les dimensions réelles du navigateur.
+
+## Direction finale — un timbre signature
+
+Le parcours public n’utilise plus les différents modèles. Un seul composant
+SignatureStamp porte toujours LE MONDE AIME, sur papier crème/olive et bord dentelé.
+Le grand titre et la fente sont centrés dans le hero ; un seul timbre permet de
+commencer. Plus de catalogue, déplacement ou sélection de modèle dans ce parcours.
+L’éditeur plein écran permet destinataire, message et signature ; le dessin ne
+change pas. Valider sauvegarde localement puis anime la sortie de ce même timbre.
+Les créations sauvegardées reprennent toutes le même dessin. Nouveau stockage
+`ticketaime-signature-stamps-v1` ; les anciens brouillons ne sont pas effacés.
+Aucun envoi, affranchissement ou partage serveur. Tests du dialogue, sauvegarde,
+annulation, sortie, réouverture, doublons, stockage plein et reprise. Le rendu réel
+et les dimensions mobiles restent à valider visuellement dans la preview.
