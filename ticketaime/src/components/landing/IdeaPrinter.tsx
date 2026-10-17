@@ -1,5 +1,6 @@
+import { recommendPieces, type PieceStep } from '../../data/pieceRoles';
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { composeFromBrief, USAGE_STORIES, type CreationDraft } from "../../data/landing";
+import { USAGE_STORIES, type CreationDraft } from "../../data/landing";
 import PiecePreview from "./PiecePreview";
 import { ITEMS } from "../../data/catalogue";
 
@@ -9,9 +10,10 @@ export function Arrow({ diagonal = false }: { diagonal?: boolean }) {
 
 interface IdeaPrinterProps {
   onOpen: (draft: CreationDraft) => void;
+  onScenario?: (steps: PieceStep[]) => void;
 }
 
-export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
+export default function IdeaPrinter({ onScenario }: IdeaPrinterProps) {
   const [brief, setBrief] = useState("");
   const [draft, setDraft] = useState<CreationDraft | null>(null);
   const [phase, setPhase] = useState<"idle" | "printing" | "ready">("idle");
@@ -33,12 +35,14 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
       return;
     }
     setError("");
-    setDraft(composeFromBrief(brief));
+    const next = recommendPieces(brief, 'organizer');
+    setDraft(next[0].draft);
     setPhase("printing");
     if (timer.current) clearTimeout(timer.current);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     timer.current = setTimeout(() => {
       setPhase("ready");
+      onScenario?.(next);
       requestAnimationFrame(() => result.current?.focus({ preventScroll: true }));
     }, reduced ? 100 : 2100);
   };
@@ -59,7 +63,7 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
           maxLength={360}
           value={brief}
           onChange={(e) => { setBrief(e.target.value); if (error) setError(""); }}
-          placeholder="Un mariage, une soirée, un mot doux…"
+          placeholder="Racontez votre rêve ou votre projet…"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? "brief-error" : "brief-help"}
         />
@@ -86,8 +90,8 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
               key={draft.id}
               className="printed-piece"
               disabled={phase !== "ready"}
-              onClick={() => onOpen(draft)}
-              aria-label={`Ouvrir ma pièce ${usage?.title ?? "personnalisée"} dans le canevas`}
+              onClick={() => document.getElementById('video-postcard')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })}
+              aria-label={`Découvrir le parcours ${usage?.title ?? "personnalisé"} avec la carte postale vidéo`}
               data-printed-module={draft.itemId}
               style={printedItem ? { width: Math.min(340, 158 * printedItem.w / printedItem.h), maxWidth: "100%", marginInline: "auto" } : undefined}
             >
@@ -105,10 +109,11 @@ export default function IdeaPrinter({ onOpen }: IdeaPrinterProps) {
           {phase === "printing" && <span>Un peu d'encre. Beaucoup de possibilités.</span>}
           {phase === "ready" && <>
             <strong>Votre pièce est prête.</strong>
-            <button type="button" onClick={() => draft && onOpen(draft)} className="printer-open">Cliquez pour ouvrir le canevas <Arrow /></button>
+            <button type="button" onClick={() => document.getElementById('video-postcard')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })} className="printer-open">Découvrir votre parcours <Arrow /></button>
           </>}
         </div>
       </div>
+
     </div>
   );
 }

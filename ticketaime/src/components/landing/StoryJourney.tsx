@@ -1,0 +1,59 @@
+import { packageFromBrief } from '../../data/ticketPackages';
+import { loadSection, sectionKey } from '../../data/storyStorage';
+import { useEffect, useRef, useState } from 'react';
+import type { PieceStep } from '../../data/pieceRoles';
+import type { CreationDraft } from '../../data/landing';
+import { USAGE_STORIES } from '../../data/landing';
+import PiecePreview from './PiecePreview';
+import '../../story-journey.css';
+export default function StoryJourney({ steps, onClear, onOpen }: { steps: PieceStep[]; onClear?: () => void; onOpen: (draft: CreationDraft) => void }) {
+  const [recap, setRecap] = useState<{ title: string; text: string; id: string }[] | null>(null);
+  const recapHeading = useRef<HTMLHeadingElement>(null);
+  return <section id="usages" className="story-journey" aria-labelledby="story-title">
+    <div className="lma-container story-heading"><p className="lma-eyebrow">Votre fil d’histoire · brouillon local</p><h2 id="story-title">Un moment après l’autre.<br /><em>Votre parcours prend forme.</em></h2><p>Les scènes illustrent une intention, pas vos participants réels. Personnalisez votre parcours au fil des sections. Aucun site public ni droit partagé n’est créé.</p><details><summary>À propos de ce brouillon</summary><p role="note">Ne saisissez pas de données d’invités, de devis confidentiels ou d’allergies ici. Parcours, textes et couleurs enregistrés uniquement dans ce navigateur, sans synchronisation. Les médias importés restent temporaires et doivent être sélectionnés à nouveau après rechargement. Ne considérez pas ce stockage comme un espace privé sécurisé.</p><button type="button" onClick={() => { if (!window.confirm('Effacer ce parcours et ses textes/couleurs de ce navigateur ?')) return; try { steps.forEach(step => localStorage.removeItem(sectionKey(step.draft.id))); onClear?.(); } catch { window.alert('Impossible d’effacer le stockage local. Utilisez les réglages de votre navigateur.'); } }}>Effacer ce brouillon local</button></details><nav aria-label="Étapes du scénario">{steps.map((step, index) => <a key={step.id} href={`#story-${step.id}`}>{String(index+1).padStart(2,'0')} · {step.title}</a>)}</nav></div>
+    {steps.map((step, index) => <StorySection key={step.draft.id} step={step} index={index} onOpen={onOpen} />)}
+
+    <div className="lma-container story-ending">
+      <p className="lma-eyebrow">Le fil de votre histoire</p>
+      <button type="button" id="story-recap-control" className="lma-nav-cta" aria-expanded={recap !== null} aria-controls="story-recap" onClick={() => {
+        if (recap) { setRecap(null); return; }
+        setRecap(steps.map(step => ({ id: step.id, title: document.getElementById(`story-title-${step.id}`)?.textContent || step.title, text: document.getElementById(`story-text-${step.id}`)?.textContent || step.reason })));
+        requestAnimationFrame(() => recapHeading.current?.focus());
+      }}>Raconter l’histoire {recap ? '−' : '→'}</button>
+      <p className="story-recap-note">Version texte du parcours, sans lecture audio automatique. Les vidéos se lisent avec leurs commandes.</p>
+      <div id="story-recap" hidden={!recap}>{recap && <><h2 tabIndex={-1} ref={recapHeading}>Votre histoire, étape par étape</h2><ol>{recap.map(item => <li key={item.id}><h3>{item.title}</h3><p>{item.text}</p><a href={`#story-${item.id}`}>Retrouver cette étape</a></li>)}</ol><p>Brouillon local : aucune réponse reçue, relance ou validation effectuée. Ce récapitulatif n’est ni une audiodescription des vidéos ni une attestation de conformité d’accessibilité.</p></>}</div>
+    </div>
+  </section>;
+}
+function StorySection({ step, index, onOpen }: { step: PieceStep; index: number; onOpen: (draft: CreationDraft) => void }) {
+  const [initial] = useState(() => loadSection(step.draft.id, { title: step.title, text: step.reason, background: '#f5f3ee' }));
+  const [title, setTitle] = useState(initial.title);
+  const [text, setText] = useState(initial.text);
+  const [background, setBackground] = useState(initial.background);
+  const [saveError, setSaveError] = useState('');
+  useEffect(() => {
+    try { localStorage.setItem(sectionKey(step.draft.id), JSON.stringify({ title, text, background })); setSaveError(''); }
+    catch { setSaveError('Modifications non sauvegardées : stockage local indisponible.'); }
+  }, [title, text, background, step.draft.id]);
+  const [media, setMedia] = useState<{url: string; type: 'image' | 'video'} | null>(null);
+  const [error, setError] = useState('');
+  const objectUrl = useRef<string | null>(null);
+  useEffect(() => () => { if (objectUrl.current) URL.revokeObjectURL(objectUrl.current); }, []);
+  const resetMedia = () => { if (objectUrl.current) URL.revokeObjectURL(objectUrl.current); objectUrl.current = null; setMedia(null); setError(''); };
+  const source = USAGE_STORIES.find(story => story.id === step.draft.usageId) ?? USAGE_STORIES[0];
+  return <section id={`story-${step.id}`} className="story-section" style={{ backgroundColor: background }} aria-labelledby={`story-title-${step.id}`}>
+    <div className="story-scene">
+      {media?.type === 'video' ? <video src={media.url} controls playsInline preload="metadata" aria-label={`Scène illustrative : ${title}`} onError={() => setError('Cette vidéo ne peut pas être lue. Essayez un autre MP4/WebM ou revenez au visuel initial.')} /> : <img src={media?.url ?? source.image} alt={media ? `Visuel personnalisé pour ${title}` : source.alt} loading="lazy" onError={() => setError('Image illisible : choisissez un autre fichier ou revenez au visuel initial.')} />}
+      <span className="story-scene-label">{media ? 'VOTRE MÉDIA · LOCAL' : 'SCÈNE ILLUSTRATIVE'} · {String(index+1).padStart(2,'0')}</span>
+    </div>
+    <div className="lma-container story-content"><div className="story-copy"><p className="lma-eyebrow">{step.recipient}</p><h2 id={`story-title-${step.id}`}>{title}</h2><p id={`story-text-${step.id}`}>{text}</p><button type="button" className="lma-nav-cta" onClick={() => { const pack = packageFromBrief(step.draft.brief, step.draft.usageId); onOpen({ ...pack, itemId: step.draft.itemId, fields: step.draft.fields, tickets: [{itemId:step.draft.itemId,fields:step.draft.fields}, ...(pack.tickets ?? []).filter(ticket => ticket.itemId !== step.draft.itemId)] }); }}>Ouvrir le pack de tickets dans l’atelier ↗</button><details><summary>Informations et confidentialité</summary><p>{step.privacy}</p><p className="story-state">Brouillon · réponses et actions serveur non connectées</p></details><details><summary>Prochaines actions envisagées</summary><p>Une fois les services sécurisés connectés : partager au bon destinataire, recevoir sa réponse, proposer une relance et confirmer les validations. Aucune de ces actions n’est exécutée ici.</p></details></div>
+    <div className="story-piece" inert aria-hidden="true"><PiecePreview itemId={step.draft.itemId} fields={step.draft.fields} decorative /></div></div>
+    <details className="lma-container story-editor"><summary>Personnaliser cette section</summary><div className="story-editor-fields"><label>Titre<input value={title} maxLength={120} onChange={event => setTitle(event.target.value)} /></label><label>Texte de la section<textarea value={text} maxLength={1500} onChange={event => setText(event.target.value)} /></label><label>Fond de la section<input type="color" value={background} onChange={event => setBackground(event.target.value)} /></label><label>Image ou vidéo locale (30 Mo maximum)<input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" onChange={event => {
+      const file = event.target.files?.[0]; event.target.value = ''; if (!file) return;
+      if (!['image/jpeg','image/png','image/webp','video/mp4','video/webm'].includes(file.type) || file.size > 30*1024*1024) { setError('Choisissez un JPG, PNG, WebP, MP4 ou WebM de 30 Mo maximum.'); return; }
+      if (objectUrl.current) URL.revokeObjectURL(objectUrl.current); const url = URL.createObjectURL(file); objectUrl.current = url; setMedia({url, type:file.type.startsWith('video/')?'video':'image'}); setError('');
+    }} /></label><p>Utilisez des médias dont vous possédez les droits et l’accord des personnes représentées. Aucun fichier n’est envoyé à un serveur. Ajoutez dans le texte les informations nécessaires pour comprendre une vidéo sans le son.</p><button type="button" onClick={resetMedia}>Revenir au visuel initial</button></div></details>
+    {saveError && <p className="lma-container story-error" role="alert">{saveError}</p>}
+    {error && <p className="lma-container story-error" role="alert">{error}</p>}
+  </section>;
+}
