@@ -1,3 +1,4 @@
+import { packageFromBrief } from '../data/ticketPackages';
 import { loadScenario, STORY_KEY } from '../data/storyStorage';
 import StoryJourney from './landing/StoryJourney';
 import type { PieceStep } from '../data/pieceRoles';
@@ -5,7 +6,7 @@ import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from 
 import IdeaPrinter, { Arrow } from "./landing/IdeaPrinter";
 import VideoPostcard from "./landing/VideoPostcard";
 import PiecePreview from "./landing/PiecePreview";
-import { composeFromBrief, USAGE_STORIES, type CreationDraft } from "../data/landing";
+import { USAGE_STORIES, type CreationDraft } from "../data/landing";
 import "../landing.css";
 
 function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -114,8 +115,12 @@ export default function Landing({ onCommencer, onCatalogue }: LandingProps) {
                   <p className="scene-category">{usage.title}</p>
                   <h3 id={`title-${usage.id}`}>{usage.headline.split("\n").map((line, i) => <span key={line}>{i > 0 && <br />}{line}</span>)}</h3>
                   <p className="scene-description">{usage.description}</p>
-                  <button type="button" className="scene-cta" onClick={() => onCommencer(composeFromBrief(usage.sample, usage.id))}>{usage.cta}<Arrow diagonal /></button>
+                  <button type="button" className="scene-cta" onClick={() => onCommencer(packageFromBrief(usage.sample, usage.id))}>Ouvrir ce pack dans l’atelier <Arrow diagonal /></button>
                 </Reveal>
+                <div className="usage-ticket-package" aria-label={`Pack de tickets : ${usage.title}`}>
+                  {packageFromBrief(usage.sample, usage.id).tickets?.map((ticket, i) => <div key={ticket.itemId} className="usage-package-ticket" style={{ '--ticket-index': i } as CSSProperties} inert><PiecePreview itemId={ticket.itemId} fields={ticket.fields} decorative /></div>)}
+                  <span className="usage-package-label">Pack de modèles personnalisables · aucun droit émis</span>
+                </div>
                 <span className="scene-index" aria-hidden="true">{String(index + 1).padStart(2, "0")} <i /> {String(USAGE_STORIES.length).padStart(2, "0")}</span>
               </div>
             </section>

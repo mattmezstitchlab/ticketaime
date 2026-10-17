@@ -50,19 +50,16 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
 
   const [canvasItems, setCanvasItems] = useState<CanvasItemInstance[]>(() => {
     if (initialCreation) {
-      const item = ITEMS.find((piece) => piece.id === initialCreation.itemId);
-      if (item) return [{
-        instanceId: `idea-${initialCreation.id}`,
-        itemId: item.id,
-        x: typeof window !== "undefined" && window.innerWidth < 700 ? 4 : 60,
-        y: 100,
-        zIndex: 1,
-        customization: {
-          ...blankCustom(item),
-          fields: { ...blankCustom(item).fields, ...initialCreation.fields },
-          brief: initialCreation.brief,
-        },
-      }];
+      const tickets = initialCreation.tickets?.length ? initialCreation.tickets : [{itemId: initialCreation.itemId, fields: initialCreation.fields}];
+      return tickets.flatMap((ticket, index) => {
+        const item = ITEMS.find(entry => entry.id === ticket.itemId);
+        if (!item) return [];
+        const mobile = typeof window !== 'undefined' && window.innerWidth < 700;
+        return [{ instanceId: index === 0 ? `idea-${initialCreation.id}` : `idea-${initialCreation.id}-${index}`, itemId: item.id,
+          x: mobile ? 4 : 50 + (index % 2) * 370, y: 60 + Math.floor(index / (mobile ? 1 : 2)) * 280, zIndex: index + 1,
+          customization: { ...blankCustom(item), fields: { ...blankCustom(item).fields, ...ticket.fields }, brief: initialCreation.brief },
+        }];
+      });
     }
     return [];
   });

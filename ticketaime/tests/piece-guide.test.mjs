@@ -6,11 +6,11 @@ const directory = new URL('../node_modules/.cache/', import.meta.url);
 await mkdir(directory, { recursive: true });
 const output = new URL('piece-guide-test.mjs', directory);
 const result = await build({
-  stdin: { contents: `export {default as WalletView} from './src/components/WalletView'; export {parseScenario,loadSection,sectionKey} from './src/data/storyStorage'; export {default as StoryJourney} from './src/components/landing/StoryJourney'; export {default as PieceObject} from './src/components/PieceObject'; export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
+  stdin: { contents: `export {packageFromBrief} from './src/data/ticketPackages'; export {default as WalletView} from './src/components/WalletView'; export {parseScenario,loadSection,sectionKey} from './src/data/storyStorage'; export {default as StoryJourney} from './src/components/landing/StoryJourney'; export {default as PieceObject} from './src/components/PieceObject'; export {default as ProfessionalJourney} from './src/components/ProfessionalJourney'; export {ROLES,rolesForCategory,recommendPieces} from './src/data/pieceRoles'; export {ITEMS,CATEGORIES} from './src/data/catalogue'; export {PIECE_USES} from './src/data/pieceUses'; export {default as PieceGuide} from './src/components/PieceGuide';`, resolveDir: new URL('../', import.meta.url).pathname, loader: 'tsx' },
   bundle: true, platform: 'node', format: 'esm', packages: 'external', loader: { '.css': 'empty' }, write: false,
 });
 await writeFile(output, result.outputFiles[0].text);
-const { WalletView, parseScenario, loadSection, sectionKey, StoryJourney, PieceObject, ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
+const { packageFromBrief, WalletView, parseScenario, loadSection, sectionKey, StoryJourney, PieceObject, ProfessionalJourney, ITEMS, CATEGORIES, PIECE_USES, PieceGuide, ROLES, rolesForCategory, recommendPieces } = await import(output.href);
 const { createElement } = await import('react');
 const { renderToStaticMarkup } = await import('react-dom/server');
 test('chaque modèle du catalogue possède une fiche d’usage complète', () => {
@@ -120,5 +120,14 @@ test('les pochettes filtrent la même collection avec une recherche partagée', 
   assert.ok(!html.includes('group/slot'));
   const match = renderToStaticMarkup(createElement(WalletView, {selectedCategory:'voyage',searchQuery:'Explorer',onSelectItem:()=>{},onSearchQuery:()=>{}}));
   assert.ok(match.includes('group/slot'));
+});
+test('les packs contiennent des modèles existants sans doublon et gardent le ticket principal', () => {
+  for (const usage of ['mariage','voyage','cinema','spectacle','administratif','loisirs','bar','postale']) {
+    const pack = packageFromBrief('Notre projet', usage);
+    assert.ok(pack.tickets.length >= 2);
+    assert.equal(pack.tickets[0].itemId, pack.itemId);
+    assert.equal(new Set(pack.tickets.map(t=>t.itemId)).size, pack.tickets.length);
+    for (const ticket of pack.tickets) assert.ok(ITEMS.some(item=>item.id===ticket.itemId));
+  }
 });
 await rm(output);
