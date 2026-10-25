@@ -1,0 +1,40 @@
+/* Shared editorial chrome follows the landing; ticket artwork keeps its own fonts. */
+:is(.piece-guide,.pro-page){--lma-paper:#f5f3ee;--lma-ink:#262723;--lma-soft:#7a7b74;background:var(--lma-paper);color:var(--lma-ink);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+:is(.piece-guide,.pro-page) *{box-sizing:border-box}
+:is(.piece-guide,.pro-page)>header{min-height:76px;max-width:none;padding:20px 48px;gap:24px;border-bottom:1px solid #26272313;background:var(--lma-paper)}
+:is(.piece-guide,.pro-page)>header>a:first-child{font-size:16px;font-weight:700;letter-spacing:-.045em;text-decoration:none;color:var(--lma-ink)}
+:is(.piece-guide,.pro-page)>header>a:not(:first-child){font-size:12px;color:#6a6c64;text-decoration:none}
+:is(.piece-guide,.pro-page) main{width:min(1280px,calc(100% - 128px));max-width:none;padding:64px 0 56px}
+:is(.piece-guide,.pro-page) h1{font-size:clamp(38px,5.5vw,76px);font-weight:500;letter-spacing:-.065em;line-height:1.03;max-width:980px;margin:18px 0 28px}
+:is(.piece-guide,.pro-page) main>p:not(.guide-eyebrow):not(.pro-kicker){max-width:760px;color:#6e7265;font-size:14px;line-height:1.75}
+:is(.piece-guide,.pro-page) h2{font-size:clamp(24px,3vw,40px);font-weight:400;letter-spacing:-.045em;line-height:1.12}
+:is(.piece-guide,.pro-page) h3{font-weight:500;letter-spacing:-.025em}
+:is(.guide-eyebrow,.pro-kicker){font-size:10px;font-weight:500;letter-spacing:.2em;color:#717567}
+:is(.piece-guide,.pro-page) a{color:#5e6859;text-underline-offset:4px}
+:is(.piece-guide,.pro-page) :is(button,input,select,textarea){border-color:#26272337;border-radius:5px;background:transparent;color:var(--lma-ink);font-family:inherit}
+:is(.piece-guide,.pro-page) button{font-size:12px;transition:background .2s}
+:is(.piece-guide,.pro-page) button:hover{background:#e9e6df}
+:is(.piece-guide,.pro-page) :is(a,button,input,select,summary):focus-visible{outline:2px solid #647966;outline-offset:4px}
+:is(.piece-guide,.pro-page) aside{border:1px solid #26272324;border-left:2px solid #937054;background:#eeebe3;border-radius:0;padding:24px;color:#5f6258;font-size:13px;line-height:1.7}
+:is(.piece-guide,.pro-page) aside h2{font-size:23px}
+:is(.guide-rules,.guide-sources){background:transparent;border:0;border-top:1px solid #26272324;border-radius:0;padding:28px 0;margin:36px 0}
+.guide-mosaic{gap:28px}
+.guide-mosaic article{background:#faf9f5;border:1px solid #2627231c;border-radius:5px;box-shadow:none}
+.guide-preview{background:#eeebe3}
+.guide-card-body{padding:24px;color:#62665b;line-height:1.7}
+.guide-card-body h2{font-size:23px;color:var(--lma-ink)}
+.guide-card-body strong{color:#454a40;font-weight:500}
+.guide-fiscal{background:#efede5;border-radius:3px;font-size:12px}
+.pro-page section{margin:64px 0}
+.pro-columns article{background:transparent;border:0;border-top:1px solid #26272324;border-radius:0;padding:24px 0}
+.pro-columns{gap:32px}
+.pro-columns p{color:#6e7265;font-size:13px}
+.pro-page button[aria-pressed=true]{outline:1px solid #647966;background:#e5e9e0}
+.pro-calendar{gap:1px;background:#26272324;border:1px solid #26272324}
+.pro-page .pro-day{border:0;border-radius:0;background:var(--lma-paper);min-height:112px}
+.pro-page .pro-day[aria-pressed=true]{outline:2px solid #647966;outline-offset:-2px;background:#eeeee6}
+.pro-weekday{background:var(--lma-paper);padding:10px;font-size:10px;color:#717567;text-transform:uppercase;letter-spacing:.08em}
+.pro-day small{background:#ead9d3;color:#624a42;font-size:10px;border-radius:2px}
+.pro-selection{border:0;border-top:1px solid #26272324;border-radius:0;padding:24px 0}
+@media(max-width:760px){:is(.piece-guide,.pro-page)>header{padding:18px 22px}:is(.piece-guide,.pro-page) main{width:calc(100% - 44px);padding-top:40px}.pro-page .pro-day{min-height:80px;padding:5px}.pro-day small{font-size:9px}.pro-weekday{padding:8px 2px;letter-spacing:0}.guide-mosaic{gap:20px}.pro-page section{margin:40px 0}}
+@media print{:is(.piece-guide,.pro-page) main{width:100%;padding:0}.guide-mosaic{gap:12px}.guide-card-body{padding:12px}.piece-guide h1{font-size:30px}.piece-guide aside{font-size:11px}}

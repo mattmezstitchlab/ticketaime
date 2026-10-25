@@ -1,0 +1,920 @@
+.fw-app {
+  min-height: 100vh;
+  background: #f4f1e9;
+  color: #292f27;
+  font-family: Arial, sans-serif;
+  --olive: #46533d;
+  --line: #d2d4c7;
+}
+.fw-app * {
+  box-sizing: border-box;
+}
+.fw-app button:not(.pocket-tab),
+.fw-app input,
+.fw-app textarea,
+.fw-app select {
+  font: inherit;
+}
+.fw-app button:not(.pocket-tab) {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 8px;
+  padding: 12px 17px;
+  color: inherit;
+}
+.fw-app button:not(.pocket-tab):hover {
+  background: #e6e9dc;
+}
+.fw-app button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.fw-app button:focus-visible,
+.fw-app input:focus-visible,
+.fw-app select:focus-visible,
+.fw-app textarea:focus-visible {
+  outline: 3px solid #8b613a;
+  outline-offset: 4px;
+}
+.fw-app h1:focus {
+  outline: none;
+}
+.fw-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 5vw;
+  border-bottom: 1px solid var(--line);
+}
+.fw-nav .fw-brand {
+  border: 0;
+  padding: 0;
+  text-align: left;
+  font-family: Georgia, serif;
+  font-size: 28px;
+}
+.fw-brand span {
+  display: block;
+  font:
+    11px Arial,
+    sans-serif;
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+}
+.fw-nav > button:last-child {
+  font-size: 13px;
+}
+.fw-nav > button:last-child span {
+  margin-left: 10px;
+}
+.fw-hero {
+  max-width: 980px;
+  margin: auto;
+  text-align: center;
+  padding: 65px 24px 70px;
+}
+.fw-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  font-weight: 700;
+}
+.fw-app h1 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(42px, 7vw, 88px);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+  margin: 22px 0;
+}
+.fw-hero > p:not(.fw-eyebrow) {
+  line-height: 1.65;
+}
+.fw-mode {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 28px 0 16px;
+}
+.fw-mode button {
+  font-size: 12px;
+  border-radius: 30px;
+}
+.fw-mode button[aria-pressed="true"] {
+  background: #dce2d0;
+  border-color: #677657;
+}
+.fw-prompt {
+  display: flex;
+  max-width: 760px;
+  margin: 0 auto;
+  border: 1px solid #bbc4ae;
+  border-radius: 12px;
+  background: #fffdf7;
+  padding: 7px;
+  gap: 8px;
+  box-shadow: 0 8px 35px #303d2510;
+}
+.fw-prompt input {
+  flex: 1;
+  min-width: 0;
+  padding: 15px;
+  border: 0;
+  background: transparent;
+}
+.fw-app .fw-primary,
+.fw-prompt button {
+  background: var(--olive);
+  color: #fffef5;
+  border-color: var(--olive);
+}
+.fw-app .fw-primary:hover,
+.fw-prompt button:hover {
+  background: #303e29;
+}
+.fw-note {
+  font-size: 11px !important;
+  line-height: 1.6;
+  color: #59634f;
+  max-width: 670px;
+  margin: 14px auto;
+}
+.fw-printer {
+  max-width: 480px;
+  margin: 36px auto 22px;
+  padding: 17px 15px 0;
+  background: #dce0d2;
+  border-radius: 18px 18px 6px 6px;
+  box-shadow: inset 0 1px 1px #fff;
+}
+.fw-slot {
+  height: 9px;
+  background: #272e25;
+  border-radius: 8px;
+  box-shadow: 0 3px 0 #fff8;
+}
+.fw-output {
+  overflow: hidden;
+  min-height: 145px;
+  padding: 0 20px 16px;
+}
+.fw-empty-slot {
+  display: block;
+  padding: 50px 10px;
+  font-size: 12px;
+  color: #66715e;
+}
+.fw-app .fw-printed {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0 0 8px;
+  animation: fw-eject 0.8s ease-out;
+}
+.fw-printed > span {
+  display: block;
+  font-size: 12px;
+  margin-top: 12px;
+}
+.fw-ticket {
+  position: relative;
+  background: #fffcf1;
+  color: #303828;
+  border-radius: 3px;
+  padding: 24px;
+  box-shadow: 0 15px 32px #27322220;
+  text-align: left;
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+.fw-ticket-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  font: 10px monospace;
+  letter-spacing: 0.08em;
+  border-bottom: 1px dashed #aaa;
+  padding-bottom: 15px;
+}
+.fw-business {
+  padding: 28px 0 14px;
+}
+.fw-business > span {
+  font: 10px monospace;
+  color: #6c5b40;
+}
+.fw-business h2 {
+  font-family: Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 12px 0;
+}
+.fw-art {
+  max-width: 520px;
+  margin: 24px auto;
+  pointer-events: none;
+}
+.fw-art .lma-piece-preview {
+  width: 100%;
+}
+.fw-art .ticket .ticket-inner {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+.fw-ticket dl {
+  margin: 18px 0;
+}
+.fw-ticket dl > div {
+  margin: 16px 0;
+}
+.fw-ticket dt {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #626d58;
+}
+.fw-ticket dd {
+  margin: 5px 0;
+  font-size: 16px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+.fw-ticket-code {
+  display: block;
+  border-top: 1px dashed #aaa;
+  padding-top: 16px;
+  font: 9px monospace;
+  color: #626c57;
+  line-height: 1.6;
+}
+.fw-ticket-small {
+  padding: 18px;
+}
+.fw-ticket-small .fw-art {
+  max-width: 220px;
+  max-height: 190px;
+  overflow: hidden;
+  margin: 16px auto;
+}
+.fw-ticket-small .fw-business {
+  padding: 10px 0;
+}
+.fw-ticket-small h2 {
+  font-size: 24px;
+}
+.fw-stamp {
+  display: table;
+  margin: 15px 0 15px auto;
+  padding: 16px 12px;
+  border: 2px dashed #9c9b89;
+  font: 10px monospace;
+  max-width: 180px;
+}
+.fw-stamp.is-stamped {
+  background: #dbd2bb;
+  color: #73412d;
+  border: 3px dotted #91775e;
+  transform: rotate(-5deg);
+}
+.fw-discover,
+.fw-wallet {
+  max-width: 1200px;
+  margin: auto;
+  padding: 50px 30px 90px;
+}
+.fw-discover {
+  border-top: 1px solid var(--line);
+}
+.fw-discover h2 {
+  font:
+    normal clamp(28px, 4vw, 45px)/1.2 Georgia,
+    serif;
+  letter-spacing: -0.03em;
+}
+.fw-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+.fw-app .fw-tool {
+  padding: 26px;
+  text-align: left;
+  border-radius: 4px;
+  background: #eeeee3;
+  min-height: 185px;
+  display: flex;
+  flex-direction: column;
+}
+.fw-tool > span {
+  font:
+    24px Georgia,
+    serif;
+}
+.fw-tool p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #5c6652;
+  flex: 1;
+}
+.fw-tool small {
+  font-size: 10px;
+  color: #626b58;
+}
+.fw-wallet h1 {
+  font-size: clamp(38px, 6vw, 64px);
+}
+.fw-wallet > .fw-mode {
+  justify-content: flex-start;
+}
+.fw-filters {
+  display: flex;
+  gap: 20px;
+  margin: 25px 0;
+}
+.fw-app label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.fw-filters label {
+  flex: 1;
+}
+.fw-app label input,
+.fw-app label select,
+.fw-app textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #bdc5b3;
+  background: #fffdf6;
+  border-radius: 6px;
+  padding: 12px;
+  color: #273321;
+}
+.fw-app textarea {
+  resize: vertical;
+}
+.fw-app .fw-saved {
+  padding: 14px;
+  background: #e3e6da;
+  text-align: left;
+}
+.fw-saved > span {
+  display: block;
+  font-size: 12px;
+  margin-top: 18px;
+}
+.fw-editor {
+  max-width: 1300px;
+  margin: auto;
+  padding: 30px 30px 90px;
+}
+.fw-editor-heading h1 {
+  font-size: clamp(34px, 5vw, 58px);
+}
+.fw-editor-heading > p:last-child {
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 700px;
+}
+.fw-editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+  gap: 65px;
+  margin-top: 40px;
+  align-items: start;
+}
+.fw-stage {
+  min-width: 0;
+  padding: 20px 0;
+}
+.fw-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.fw-controls details > label {
+  margin: 14px 0;
+}
+.fw-controls summary {
+  font-size: 12px;
+  cursor: pointer;
+}
+.fw-actions {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.fw-actions .fw-note {
+  margin: 0;
+}
+.fw-app .fw-check {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-size: 11px;
+  color: #59634f;
+}
+.fw-check input {
+  width: auto !important;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.fw-status {
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 15px;
+  background: #e3e8d8;
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+}
+.fw-stamp-action,
+.fw-stamp-target {
+  display: block;
+  margin: 25px auto 0;
+  font-size: 12px !important;
+}
+.fw-stamp-action {
+  border-style: dotted !important;
+  background: #e6ddc8 !important;
+  max-width: 240px;
+}
+.fw-stamp-target {
+  border-style: dashed !important;
+}
+.fw-footer {
+  border-top: 1px solid var(--line);
+  padding: 32px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #65705c;
+}
+@keyframes fw-eject {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@media (max-width: 780px) {
+  .fw-tool-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fw-editor-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  .fw-stage {
+    max-width: 560px;
+    width: 100%;
+    margin: auto;
+  }
+  .fw-hero {
+    padding-top: 40px;
+  }
+  .fw-editor {
+    padding: 25px 20px 60px;
+  }
+  .fw-printer {
+    max-width: 360px;
+  }
+  .fw-filters {
+    flex-direction: column;
+  }
+}
+@media (max-width: 480px) {
+  .fw-nav {
+    padding: 18px;
+  }
+  .fw-nav .fw-brand {
+    font-size: 22px;
+  }
+  .fw-brand span {
+    font-size: 9px;
+  }
+  .fw-tool-grid {
+    grid-template-columns: 1fr;
+  }
+  .fw-prompt {
+    flex-direction: column;
+  }
+  .fw-hero {
+    padding-inline: 18px;
+  }
+  .fw-prompt button {
+    width: 100%;
+  }
+  .fw-ticket {
+    padding: 18px;
+  }
+  .fw-discover,
+  .fw-wallet {
+    padding: 30px 20px 60px;
+  }
+  .fw-ticket-head {
+    font-size: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fw-printed {
+    animation: none !important;
+  }
+}
+@media print {
+  .fw-nav,
+  .fw-controls,
+  .fw-editor-heading,
+  .fw-footer,
+  .fw-stamp-action,
+  .fw-stamp-target {
+    display: none !important;
+  }
+  .fw-editor-grid {
+    display: block;
+  }
+  .fw-ticket {
+    box-shadow: none;
+  }
+}
+.fw-hero-stamp {
+  max-width: 240px;
+  margin: 20px auto;
+  padding: 22px;
+  border: 4px dotted #a78560;
+  background: #eadfbd;
+  text-align: center;
+  font-size: 36px;
+  color: #775137;
+}
+.fw-hero-stamp strong,
+.fw-hero-stamp span {
+  display: block;
+  font: 10px monospace;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+.fw-hero-stamp span {
+  font-size: 9px;
+}
+.fw-models {
+  margin-top: 45px;
+  border-top: 1px solid var(--line);
+  padding-top: 25px;
+}
+.fw-models h2 {
+  font:
+    30px Georgia,
+    serif;
+}
+.fw-models > p {
+  font-size: 13px;
+}
+.fw-app .fw-model {
+  text-align: left;
+  background: #e5e7da;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+}
+.fw-model-art {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fw-model-art .lma-piece-preview {
+  width: 130px;
+}
+.fw-model strong {
+  font-size: 13px;
+}
+.fw-model > span {
+  font-size: 11px;
+}
+.fw-stamp .lma-piece-preview {
+  width: 95px;
+}
+/* Keep the existing editorial identity; the wallet changes the journey, not the brand. */
+.fw-app.lma-page {
+  background: var(--lma-paper);
+  color: var(--lma-ink);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif;
+}
+.fw-app.lma-page h1 {
+  font-family: inherit;
+  font-weight: 450;
+  letter-spacing: -0.055em;
+}
+.fw-app.lma-page .lma-wordmark {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.fw-app.lma-page .lma-wordmark span {
+  display: inline;
+  font: inherit;
+  margin: 0;
+  letter-spacing: inherit;
+}
+.fw-app.lma-page .lma-nav-cta {
+  font-size: 12px;
+  border-radius: 5px;
+  padding: 11px 17px;
+  background: transparent;
+  color: var(--lma-ink);
+}
+.fw-app.lma-page .fw-primary {
+  background: #2d3329;
+  border-color: #2d3329;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.fw-app.lma-page .fw-tool {
+  background: #fbfaf6;
+  border-color: #26272320;
+  border-radius: 5px;
+}
+.fw-app.lma-page .fw-tool > span {
+  font:
+    500 22px/1.2 -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    "Segoe UI",
+    sans-serif;
+  letter-spacing: -0.035em;
+}
+.fw-app.lma-page .fw-wallet h1,
+.fw-app.lma-page .fw-editor-heading h1 {
+  font-weight: 450;
+  letter-spacing: -0.055em;
+}
+.fw-app.lma-page .fw-mode {
+  margin: 0 0 14px;
+  gap: 16px;
+}
+.fw-app.lma-page .fw-mode button {
+  font-size: 11px;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #747a6b;
+}
+.fw-app.lma-page .fw-mode button[aria-pressed="true"] {
+  color: #283621;
+  border-bottom-color: #283621;
+}
+.fw-app.lma-page .fw-wallet > .fw-mode {
+  margin-top: 28px;
+}
+.fw-app.lma-page .idea-submit {
+  border: 0;
+  background: #2d3329;
+  color: #f8f6ef;
+  border-radius: 7px;
+  padding: 14px 18px;
+  font-size: 12px;
+}
+.fw-app.lma-page .printed-piece {
+  padding: 0;
+  border: 0;
+  background: none;
+  max-width: 300px;
+  margin: auto;
+  border-radius: 0;
+  animation: print-feed 2s both;
+}
+.fw-app.lma-page .printed-piece > span {
+  display: none;
+}
+.fw-app.lma-page .printer-window .lma-piece-preview {
+  width: 100%;
+}
+.fw-app.lma-page .fw-ticket {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+.fw-app.lma-page .fw-ticket-head {
+  font-size: 9px;
+  color: #73776b;
+  border: 0;
+  padding-bottom: 8px;
+}
+.fw-app.lma-page .fw-ticket .fw-art {
+  max-width: 100%;
+  margin: 0 auto 28px;
+  filter: drop-shadow(0 12px 15px #30291618);
+}
+.fw-app.lma-page .fw-business {
+  background: #fffdf5;
+  padding: 30px;
+  border-bottom: 1px dashed #dad6c8;
+  box-shadow: 0 10px 24px #30291610;
+}
+.fw-app.lma-page .fw-business h2 {
+  font-family: var(--font-mono-vintage);
+  font-size: 28px;
+}
+.fw-app.lma-page .fw-models h2 {
+  font-family: inherit;
+  font-weight: 450;
+  letter-spacing: -0.04em;
+}
+.fw-app.lma-page .fw-model,
+.fw-app.lma-page .fw-saved {
+  background: #eeede7;
+  border-radius: 5px;
+}
+.fw-app.lma-page .fw-model-art {
+  height: 200px;
+}
+.fw-app.lma-page .fw-wallet,
+.fw-app.lma-page .fw-editor {
+  padding-top: 60px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fw-app.lma-page .printed-piece {
+    animation: none;
+  }
+}
+/* The home mounts the original Landing without the wallet's generic button/type rules. */
+.idea-printer .fw-mode {
+  margin: 0 0 14px;
+  gap: 16px;
+}
+.idea-printer .fw-mode button {
+  font: inherit;
+  font-size: 11px;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #747a6b;
+}
+.idea-printer .fw-mode button[aria-pressed="true"] {
+  color: #283621;
+  border-bottom-color: #283621;
+}
+.idea-printer .fw-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  margin: 10px auto 0;
+  border: 1px solid #26272337;
+  border-radius: 5px;
+  padding: 11px 17px;
+  background: transparent;
+  color: #262723;
+  font: inherit;
+  font-size: 12px;
+}
+.idea-printer .fw-primary:hover {
+  background: #e9e6df;
+}
+.idea-printer .fw-note {
+  margin: 12px 0 0 !important;
+  font-size: 10px !important;
+  text-align: left;
+  line-height: 1.5;
+  color: #73776b;
+}
+.idea-printer .printed-piece {
+  max-width: 300px;
+  margin: auto;
+}
+.idea-printer .printed-piece > span {
+  display: none;
+}
+.idea-printer .fw-status {
+  margin: 10px 0;
+  font-size: 11px;
+  text-align: left;
+}
+@media (max-width: 600px) {
+  .idea-printer .fw-mode {
+    gap: 12px;
+  }
+  .idea-printer .fw-mode button {
+    font-size: 10px;
+  }
+}
+@media print {
+  .fw-app .lma-nav {
+    display: none !important;
+  }
+}
+/* Original archival pockets: keep dark plastic, ring holes and vintage ticket artwork. */
+.fw-pocket-surface {
+  background: #1c1c1f;
+  border-radius: 8px;
+  margin-top: 25px;
+  padding: 20px 8px;
+  color: #f4efe2;
+  min-width: 0;
+}
+.fw-app .functional-pocket-book .workshop-pocket-search {
+  color: #e4ded2;
+  flex-direction: row;
+  align-items: center;
+}
+.fw-app .functional-pocket-book .workshop-pocket-search input {
+  width: min(350px, 100%);
+  background: #f5f3ee;
+  color: #262723;
+}
+.functional-pocket-book [data-pocket-entry] .ticket {
+  pointer-events: none;
+}
+.functional-pocket-book [data-pocket-entry]:focus-visible {
+  outline: 2px solid #d8b26a;
+  outline-offset: 4px;
+}
+.fw-app .functional-pocket-book .fw-ticket {
+  padding: 12px;
+  background: #fffdf5;
+  color: #303828;
+}
+.fw-app .functional-pocket-book .fw-ticket-head {
+  font-size: 8px;
+  color: #646854;
+}
+.fw-app .functional-pocket-book .fw-ticket .fw-business {
+  padding: 10px;
+  box-shadow: none;
+}
+.fw-app .functional-pocket-book .fw-ticket .fw-business h2 {
+  font-size: 16px;
+}
+.fw-app .functional-pocket-book .fw-ticket-code {
+  font-size: 8px;
+}
+.fw-secondary-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.fw-secondary-actions button {
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .fw-pocket-surface {
+    margin-inline: -10px;
+    padding: 15px 0;
+  }
+  .functional-pocket-book .workshop-pocket-search {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+@media print {
+  .fw-secondary-actions,
+  .fw-pocket-surface {
+    display: none !important;
+  }
+  .fw-stage {
+    break-inside: avoid;
+  }
+}
+/* Simple white collection replaces the binder, without altering the ticket designs. */
+.fw-app.lma-page:has(.fw-wallet){background:#fff}
+.fw-pocket-surface{background:#fff;color:#262723;padding:20px 0;border-radius:0}
+.plain-ticket-collection{background:#fff;color:#262723}
+.fw-app .plain-ticket-collection .workshop-pocket-search{color:#62685c;margin:0 0 20px;display:flex;flex-wrap:wrap}
+.fw-app .plain-ticket-collection .workshop-pocket-search input{background:#fff;border:1px solid #d6d8d0}
+.plain-category-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 30px}
+.fw-app .plain-category-tabs .pocket-tab{font:inherit;font-size:11px;border:1px solid #dedfd9;border-radius:4px;padding:8px 10px;background:#fff;color:#525a4b;cursor:pointer}
+.fw-app .plain-category-tabs .pocket-tab[aria-pressed=true]{background:#30392b;color:#fff;border-color:#30392b}
+.plain-category-tabs span{opacity:.65}.plain-ticket-collection h3{font-size:25px;letter-spacing:-.035em}.plain-collection-count{font-size:11px;color:#747a6b;margin:8px 0 20px!important}
+.plain-ticket-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:38px 25px}
+.fw-app .plain-ticket-choice{display:flex;flex-direction:column;align-items:stretch;border:0;background:#fff;padding:12px 0;border-radius:0;text-align:left;min-width:0}
+.fw-app .plain-ticket-choice:hover{background:#fff}.plain-ticket-art{height:240px;display:flex;justify-content:center;align-items:center;pointer-events:none;filter:drop-shadow(0 8px 8px #30291616)}
+.plain-ticket-choice strong{font-size:12px;margin-top:18px}.plain-ticket-choice>span{font-size:10px;color:#717767;margin-top:6px}
+.fw-app .plain-ticket-collection .fw-ticket{background:transparent;padding:0}.fw-app .plain-ticket-collection .fw-ticket-small .fw-art{max-height:180px}
+@media(max-width:850px){.plain-ticket-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.plain-ticket-grid{grid-template-columns:1fr}.fw-pocket-surface{margin-inline:0}.plain-ticket-art{height:220px}}
+.fw-app .plain-ticket-choice{cursor:pointer}.fw-app .plain-ticket-choice:focus-visible{outline:2px solid #647966;outline-offset:5px}

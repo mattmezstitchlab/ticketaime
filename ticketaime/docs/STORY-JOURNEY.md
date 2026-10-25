@@ -1,0 +1,69 @@
+# Scénario vertical personnalisable
+
+Après la première impression depuis le hero, les recommandations du rôle choisi
+se déplient sous le hero. Les scènes génériques d'usages sont alors remplacées
+par cette page-parcours ; un changement de rôle rétablit l'accueil initial.
+Chaque étape possède un visuel pleine largeur, sa pièce, son destinataire,
+une explication, ses précautions et un lien d'ouverture dans le canevas.
+
+Personnalisation locale par section : titre, texte, fond, image JPG/PNG/WebP ou
+vidéo MP4/WebM, 30 Mo maximum par fichier. Aucun upload serveur ; les médias sont
+des URL objet libérées au remplacement et au démontage. Les vidéos disposent des
+commandes natives et ne démarrent pas automatiquement. Les médias doivent être
+licenciés/consentis ; les visuels initiaux sont identifiés comme illustrations.
+Un fond neutre derrière le texte conserve sa lisibilité lorsque le fond est modifié.
+
+Les modifications ne sont pas persistées ni publiées. Rechargement, nouveau brief,
+changement de rôle ou ouverture du canevas réinitialisent la page. Le titre/texte
+personnalisés sont transmis dans le brief lors de l'ouverture de la pièce ; le
+média et la couleur ne sont pas transférés au canevas. Ce n'est pas un mini-site
+publié ni un éditeur multi-utilisateur autorisé.
+
+Aucun RSVP, donnée de santé, devis, relance, validation ou envoi connecté. Les
+suggestions de services futurs sont présentées comme telles. Le rôle déclaré
+ne prouve aucune permission. L'authentification et les permissions serveur sont
+nécessaires avant tout partage et édition à plusieurs.
+
+Contrôles : TypeScript, rendu des sections et contrôles de personnalisation,
+absence de formulaire de collecte métier, avertissements, build production.
+Recette navigateur à réaliser : générer un scénario, changer titre/texte/fond,
+charger image puis vidéo, revenir au visuel initial, tester fichier invalide,
+changer de rôle et ouvrir une pièce dans le canevas. Vérifier mobile et commandes
+vidéo. Les contrôles automatisés ne remplacent pas cette validation visuelle.
+
+## Parcours simplifié
+La pièce imprimée mène maintenant à la carte postale vidéo, placée avant les sections. Le bloc explicatif sous la fente et les boutons canevas des sections sont retirés. Les précautions restent dans des détails dépliables. La vidéo ne parle pas automatiquement, ne suit pas le scroll et aucun assistant vocal, traduction ou personnage alternatif n’est connecté.
+
+## Conclusion du parcours
+
+Après génération, les sections pédagogiques « Racontez / Attrapez / Faites-en
+la vôtre » et « Créer ma première pièce » ne sont plus affichées. Avant génération,
+elles restent disponibles et leur texte correspond au parcours actuel.
+Le bouton final « Raconter l'histoire » déplie un récapitulatif textuel avec les
+titres/textes actuellement édités et des liens vers chaque étape. État ouvert
+annoncé, panneau associé et focus sur le titre à l'ouverture. Ce n'est pas une
+narration vocale, une audiodescription des médias ou une déclaration de conformité.
+La vidéo existante est conservée ; aucun nouveau film de présentation inventé.
+Pour ajouter 2–3 présentations incarnées, fournir les médias autorisés, sous-titres,
+transcriptions et informations visuelles nécessaires. Recette navigateur : générer,
+constater la disparition des anciens appels, modifier un texte, ouvrir le résumé,
+vérifier le texte actualisé et les liens, fermer puis rouvrir au clavier.
+
+## Reprise locale et capsule
+
+Le dernier scénario et les textes/couleurs de ses sections sont désormais restaurés
+sur le même navigateur. Les données restaurées sont validées, le stockage refusé
+est signalé. Les médias importés ne sont pas sauvegardés : les recharger après
+reprise. Un effacement explicite avec confirmation est disponible dans « À propos
+de ce brouillon ». Un nouveau scénario remplace le scénario actif ; ce n'est pas
+un historique de projets ni une sauvegarde distante. Les modifications locales
+ne sont ni privées par authentification ni partagées entre appareils.
+
+Capsule fixe : parcours, présentation, lien vers le bouton de récapitulatif, haut.
+Le calendrier de démonstration ne contient plus de petits titres : case occupée
+colorée et liens-points avec noms accessibles vers les sections. Il reste distinct
+du scénario actif, sans synchronisation prétendue.
+
+L'objectif complet reste à réaliser : identité et droits serveur, stockage privé,
+partage, réponses, envois, émission sécurisée, paiements, abonnements et exploitation.
+Cette livraison n'est pas une chaîne opérationnelle de bout en bout.

@@ -17,6 +17,7 @@ export interface UsageStory {
 }
 
 export interface CreationDraft {
+  tickets?: { itemId: string; fields: Record<string, string> }[];
   id: string;
   itemId: string;
   usageId: string;

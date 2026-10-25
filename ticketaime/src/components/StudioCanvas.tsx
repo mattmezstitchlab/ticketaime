@@ -1,11 +1,11 @@
+import "../workshop.css";
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import Ticket from "./Ticket";
 import Inspector, { type PieceCustomization } from "./Inspector";
 import WalletView from "./WalletView";
 import CreateMenu, { type ChoixCreation } from "./CreateMenu";
-import SecurityBadge from "./SecurityBadge";
 import EditionOverlay from "./EditionOverlay";
-import { CATEGORIES, ITEMS, ITEM_INDEX, type CategoryId, type Item } from "../data/catalogue";
+import { CATEGORIES, ITEMS, type CategoryId, type Item } from "../data/catalogue";
 import { LAYOUTS, applyLayout, type LayoutId } from "../lib/layouts";
 import { EDITIONS, type EditionId } from "../data/editions";
 import type { CreationDraft } from "../data/landing";
@@ -22,20 +22,14 @@ export interface CanvasItemInstance {
 const INITIAL_PRESET_IDS = [
   "rose-stamp",
   "kraft-pass",
-  "token-nyc-1953",
-  "piece-1f-semeuse",
   "carte-mer",
   "polaroid-plage",
-  "billet-100f-delacroix",
-  "tampon-paye",
-  "sceau-fleur-de-lys",
-  "web-hero",
 ];
 
 const blankCustom = (it?: Item): PieceCustomization => {
   const fields: Record<string, string> = {};
   (it?.editable ?? []).forEach((c) => { fields[c.cle] = c.valeur; });
-  return { fields, actions: {}, rotate: it?.rotate ?? 0, scale: 1 };
+  return { fields, actions: {}, rotate: it?.rotate ?? 0, scale: 0.65 };
 };
 
 export default function StudioCanvas({ initialCreation }: { initialCreation?: CreationDraft | null }) {
@@ -44,11 +38,9 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | "tout">(
     () => ITEMS.find((item) => item.id === initialCreation?.itemId)?.category ?? "tout",
   );
-  const [isLibraryOpen, setIsLibraryOpen] = useState(true);
   const [selectedInstanceId, setSelectedInstanceId] = useState<string | null>(initialCreation ? `idea-${initialCreation.id}` : null);
   const [layoutMenuOpen, setLayoutMenuOpen] = useState(false);
   const [edition, setEdition] = useState<EditionId>(initialCreation?.edition ?? "classique");
-  const [securiteVisible, setSecuriteVisible] = useState(!initialCreation);
   const [mobileInspectorOpen, setMobileInspectorOpen] = useState(false);
 
   const zCounter = useRef(10);
@@ -56,33 +48,18 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
 
   const [canvasItems, setCanvasItems] = useState<CanvasItemInstance[]>(() => {
     if (initialCreation) {
-      const item = ITEMS.find((piece) => piece.id === initialCreation.itemId);
-      if (item) return [{
-        instanceId: `idea-${initialCreation.id}`,
-        itemId: item.id,
-        x: typeof window !== "undefined" && window.innerWidth < 700 ? 4 : 60,
-        y: 100,
-        zIndex: 1,
-        customization: {
-          ...blankCustom(item),
-          fields: { ...blankCustom(item).fields, ...initialCreation.fields },
-          brief: initialCreation.brief,
-        },
-      }];
+      const tickets = initialCreation.tickets?.length ? initialCreation.tickets : [{itemId: initialCreation.itemId, fields: initialCreation.fields}];
+      return tickets.flatMap((ticket, index) => {
+        const item = ITEMS.find(entry => entry.id === ticket.itemId);
+        if (!item) return [];
+        const mobile = typeof window !== 'undefined' && window.innerWidth < 700;
+        return [{ instanceId: index === 0 ? `idea-${initialCreation.id}` : `idea-${initialCreation.id}-${index}`, itemId: item.id,
+          x: mobile ? 4 : 50 + (index % 2) * 370, y: 60 + Math.floor(index / (mobile ? 1 : 2)) * 280, zIndex: index + 1,
+          customization: { ...blankCustom(item), fields: { ...blankCustom(item).fields, ...ticket.fields }, brief: initialCreation.brief },
+        }];
+      });
     }
-    return INITIAL_PRESET_IDS.map((id, index) => {
-      const it = ITEMS.find((i) => i.id === id);
-      const col = index % 4;
-      const row = Math.floor(index / 4);
-      return {
-        instanceId: `inst-${id}-init-${index}`,
-        itemId: id,
-        x: 60 + col * 260 + (index % 2 ? 15 : -15),
-        y: 50 + row * 240 + (index % 3 ? 10 : -10),
-        zIndex: index + 1,
-        customization: blankCustom(it),
-      };
-    });
+    return [];
   });
 
   const selectedInstance = useMemo(
@@ -162,15 +139,6 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
     },
     [canvasItems],
   );
-
-  const filteredLibraryItems = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
-    return ITEMS.filter((it) => {
-      const inCat = selectedCategory === "tout" || it.category === selectedCategory;
-      const inSearch = q === "" || it.name.toLowerCase().includes(q) || it.category.toLowerCase().includes(q);
-      return inCat && inSearch;
-    });
-  }, [searchQuery, selectedCategory]);
 
   const clearCanvas = () => {
     setCanvasItems([]);
@@ -277,23 +245,10 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-100 text-neutral-900">
+    <div className="workshop-shell flex flex-col min-h-screen bg-neutral-100 text-neutral-900">
       {/* ── Barre d'atelier condensée ── */}
       <header className="sticky top-0 z-50 border-b border-black/10 bg-white/85 backdrop-blur-xl">
         <div className="mx-auto max-w-[1700px] flex flex-wrap items-center gap-2 px-3 py-2 min-h-12">
-          <button
-            type="button"
-            onClick={() => setIsLibraryOpen(!isLibraryOpen)}
-            className={`h-8 px-2.5 rounded-lg text-[12px] font-medium transition-all flex items-center gap-1.5 ${
-              isLibraryOpen ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
-            }`}
-            title="Bibliothèque"
-          >
-            <span>☰</span>
-            <span className="hidden sm:inline">Bibliothèque</span>
-            <span className="font-mono text-[10px] opacity-60">{ITEMS.length}</span>
-          </button>
-
           {/* Menu « Que voulez-vous créer ? » */}
           <CreateMenu onChoix={appliquerChoix} editionActive={edition} />
 
@@ -308,16 +263,7 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
             >
               {EDITIONS[edition].nom}
             </span>
-            <button
-              type="button"
-              onClick={() => setSecuriteVisible(!securiteVisible)}
-              title="Afficher / masquer les sceaux de sécurité"
-              className={`h-8 px-2.5 rounded-lg text-[12px] font-medium transition-all ${
-                securiteVisible ? "bg-green-600 text-white" : "bg-neutral-100 text-neutral-600"
-              }`}
-            >
-              ✓ Certificat
-            </button>
+
           </div>
 
           {/* Segmented Table / Wallets */}
@@ -325,21 +271,23 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
             <button
               type="button"
               onClick={() => setViewMode("canvas")}
+              aria-pressed={viewMode === "canvas"}
               className={`flex items-center gap-1.5 px-3 h-7 rounded-[8px] text-[12px] font-medium transition-all ${
                 viewMode === "canvas" ? "bg-white shadow-sm text-neutral-900" : "text-neutral-500 hover:text-neutral-800"
               }`}
             >
-              Table libre
+              Composer
               <span className="font-mono text-[10px] px-1 rounded bg-neutral-900/10">{canvasItems.length}</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode("wallet")}
+              aria-pressed={viewMode === "wallet"}
               className={`flex items-center gap-1.5 px-3 h-7 rounded-[8px] text-[12px] font-medium transition-all ${
                 viewMode === "wallet" ? "bg-white shadow-sm text-neutral-900" : "text-neutral-500 hover:text-neutral-800"
               }`}
             >
-              Pochettes
+              Les tickets
               <span className="font-mono text-[10px] px-1 rounded bg-neutral-900/10">{CATEGORIES.length}</span>
             </button>
           </div>
@@ -407,98 +355,8 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
         </div>
       </header>
 
-      {/* ── Corps 3 colonnes ── */}
+      {/* ── Table ou tickets, avec inspecteur ── */}
       <div className="flex-1 flex min-w-0 overflow-hidden relative">
-        {/* 1. Bibliothèque */}
-        {isLibraryOpen && (
-          <aside
-            className="w-[280px] flex-none hidden md:flex flex-col bg-white border-r border-black/10 z-20 h-[calc(100vh-48px)] overflow-hidden"
-            aria-label="Bibliothèque de pièces"
-          >
-            <div className="p-3 border-b border-black/10 space-y-2.5 bg-neutral-50/80">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-neutral-500">
-                  Bibliothèque
-                </span>
-                <span className="text-[10px] font-mono text-neutral-400">
-                  {filteredLibraryItems.length}/{ITEMS.length}
-                </span>
-              </div>
-              <div className="relative">
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher…"
-                  className="w-full h-8 rounded-full border-0 bg-neutral-200/70 pl-8 pr-7 text-[12px] text-neutral-900 outline-none focus:ring-2 focus:ring-blue-500/40 placeholder:text-neutral-500"
-                />
-                <span className="absolute left-2.5 top-1 text-neutral-500 text-[12px]">⌕</span>
-                {searchQuery && (
-                  <button type="button" onClick={() => setSearchQuery("")}
-                    className="absolute right-2 top-1.5 w-4 h-4 rounded-full bg-neutral-400 text-white text-[9px] leading-none">✕</button>
-                )}
-              </div>
-              <div className="flex items-center gap-1 overflow-x-auto pb-0.5 [scrollbar-width:none]">
-                <button type="button" onClick={() => setSelectedCategory("tout")}
-                  className={`flex-none px-2 py-1 rounded-full text-[10px] font-medium transition-all ${
-                    selectedCategory === "tout" ? "bg-neutral-900 text-white" : "bg-neutral-200/70 text-neutral-600 hover:bg-neutral-200"
-                  }`}>
-                  Tout
-                </button>
-                {CATEGORIES.map((cat) => {
-                  const on = selectedCategory === cat.id;
-                  return (
-                    <button
-                      key={cat.id} type="button"
-                      onClick={() => setSelectedCategory(cat.id === selectedCategory ? "tout" : cat.id)}
-                      className={`flex-none px-2 py-1 rounded-full text-[10px] font-medium transition-all border ${
-                        on ? "bg-neutral-900 text-white border-neutral-900" : "bg-white text-neutral-600 border-black/10 hover:border-black/25"
-                      }`}
-                    >
-                      {cat.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-2 space-y-1 [scrollbar-width:thin]">
-              {filteredLibraryItems.map((item, index) => {
-                const n = ITEM_INDEX[item.id] ?? index + 1;
-                const cat = CATEGORIES.find((c) => c.id === item.category);
-                return (
-                  <div key={item.id}
-                    className="group/item flex items-center gap-2 p-1.5 pr-1 rounded-xl hover:bg-neutral-100 transition-colors">
-                    <span className="font-mono text-[9px] font-bold text-neutral-400 w-6 flex-none">
-                      {String(n).padStart(2, "0")}
-                    </span>
-                    <div className="w-12 h-10 flex-none rounded-lg bg-neutral-100 border border-black/5 flex items-center justify-center p-0.5 overflow-hidden">
-                      <div className="w-full h-full pointer-events-none scale-[0.55]">
-                        <Ticket w={item.w} h={item.h} rotate={0} label={item.name} caption={false} className="w-full">
-                          <item.Component />
-                        </Ticket>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-medium text-neutral-900 truncate m-0 leading-tight">{item.name}</p>
-                      <p className="text-[10px] text-neutral-500 m-0 truncate" style={{ color: cat?.accent ? undefined : undefined }}>
-                        {cat?.name}
-                      </p>
-                    </div>
-                    <button type="button" onClick={() => addItemToCanvas(item)} title="Poser sur la table"
-                      className="flex-none w-6 h-6 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-[13px] leading-none transition-all active:scale-90">
-                      +
-                    </button>
-                  </div>
-                );
-              })}
-              {filteredLibraryItems.length === 0 && (
-                <div className="p-6 text-center text-neutral-400 text-[12px]">Aucun résultat.</div>
-              )}
-            </div>
-          </aside>
-        )}
-
         {/* 2. Centre */}
         <main
           className="min-w-0 flex-1 overflow-auto relative canvas-dots flex flex-col items-center justify-start p-4 sm:p-6"
@@ -506,7 +364,7 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
           onClick={() => setSelectedInstanceId(null)}
         >
           {viewMode === "canvas" ? (
-            <div id="atelier-preview" className="relative w-full min-h-[1200px] max-w-[1400px] mx-auto select-none">
+            <div id="atelier-preview" className="relative w-full min-h-[700px] max-w-[1400px] mx-auto select-none">
               {canvasItems.length === 0 && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                   <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center text-2xl mb-3">
@@ -514,8 +372,9 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
                   </div>
                   <h3 className="font-semibold text-[15px] text-white/80 m-0">Table vide</h3>
                   <p className="text-[12px] text-white/40 max-w-[280px] mt-1">
-                    Posez des pièces depuis la bibliothèque, ou choisissez une mise en page.
+                    Choisissez votre premier ticket dans « Les tickets », puis personnalisez-le.
                   </p>
+                  <button type="button" className="pointer-events-auto mt-4 rounded px-4 py-2 bg-[#f5f3ee] text-[#262723] text-xs" onClick={event => { event.stopPropagation(); setViewMode('wallet'); }}>Choisir un ticket</button>
                 </div>
               )}
 
@@ -566,14 +425,6 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
                     >
                       {/* @ts-ignore */}
                       <catalogueItem.Component personnalisation={perso} />
-                      {securiteVisible && (
-                        <SecurityBadge
-                          categorie={catalogueItem.category}
-                          pieceId={catalogueItem.id}
-                          nom={catalogueItem.name}
-                          compact
-                        />
-                      )}
                       {!cust.brief && <EditionOverlay edition={EDITIONS[edition]} categorie={catalogueItem.category} compact />}
                     </Ticket>
                     {href && (
@@ -597,6 +448,8 @@ export default function StudioCanvas({ initialCreation }: { initialCreation?: Cr
           ) : (
             <div className="w-full">
               <WalletView
+                searchQuery={searchQuery}
+                onSearchQuery={setSearchQuery}
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
                 selectedItemId={selectedCatalogueItem?.id}

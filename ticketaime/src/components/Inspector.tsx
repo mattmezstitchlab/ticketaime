@@ -2,9 +2,7 @@ import { useState } from "react";
 import Ticket from "./Ticket";
 import { CATEGORIES, ITEM_INDEX, type Item } from "../data/catalogue";
 import { actionsPourPiece, LIEN_PIECE, CIBLE_LIEN } from "../lib/moduleActions";
-import SecurityBadge from "./SecurityBadge";
-import WalletSheet from "./WalletSheet";
-import { EDITIONS, type EditionId } from "../data/editions";
+import { type EditionId } from "../data/editions";
 
 export interface PieceCustomization {
   fields: Record<string, string>;
@@ -61,8 +59,6 @@ export default function Inspector({
   onRemoveFromCanvas,
   onReset,
   onPrint,
-  edition = "classique",
-  porteur,
   mobileOpen = false,
 }: InspectorProps) {
   const [activeTab, setActiveTab] = useState<TabId>("contenu");
@@ -100,9 +96,6 @@ export default function Inspector({
   const tabs: { id: TabId; label: string; count?: number }[] = [
     { id: "contenu", label: "Contenu", count: fields.length },
     { id: "fonction", label: "Fonction", count: fonctionFields.length + 1 },
-    { id: "securite", label: "Certificat" },
-    { id: "wallet", label: "Wallet" },
-    { id: "tampons", label: "Cachets" },
   ];
 
   const renderActionInput = (
@@ -309,44 +302,6 @@ export default function Inspector({
                 Aucune action spécifique — seul le lien global s'applique.
               </div>
             )}
-          </div>
-        )}
-
-        {activeTab === "securite" && (
-          <div className="space-y-3.5">
-            <SecurityBadge
-              categorie={item.category}
-              pieceId={item.id}
-              nom={item.name}
-              porteur={porteur}
-            />
-            {edition === "mariage" && (
-              <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-3 space-y-2">
-                <span className={sectionTitleCls}>Édition Mariage</span>
-                <p className="text-[11px] text-neutral-600 m-0 leading-relaxed">
-                  Cette pièce est transformée en faire-part : ruban, placement de table et compte à
-                  rebours sont appliqués sur le canevas.
-                </p>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {EDITIONS.mariage.rsvp.map((c) => (
-                    <div key={c.cle} className="rounded-lg bg-white px-2 py-1">
-                      <span className="block text-[9px] text-neutral-500">{c.label}</span>
-                      <span className="text-[11px] font-medium text-neutral-800">{c.valeur}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === "wallet" && (
-          <div className="space-y-3.5">
-            <WalletSheet
-              item={item}
-              edition={edition}
-              personnalisation={{ ...currentValues, ...currentActions }}
-            />
           </div>
         )}
 
